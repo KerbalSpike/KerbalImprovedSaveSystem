@@ -5,8 +5,8 @@
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
     <ProjectGuid>{DF2B9265-3296-4640-81FB-7FA24B782292}</ProjectGuid>
     <OutputType>Library</OutputType>
-    <RootNamespace>KerbalImprovedSavegameSystem</RootNamespace>
-    <AssemblyName>KerbalImprovedSavegameSystem</AssemblyName>
+    <RootNamespace>KerbalImprovedSaveSystem</RootNamespace>
+    <AssemblyName>KerbalImprovedSaveSystem</AssemblyName>
     <TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
     <Description>A Plugin for Kerbal Space Program that lets you choose from all existing savegames (filenames) so you don't have to remember a name and type it in if you want to overwrite a specific file.</Description>
   </PropertyGroup>
