@@ -1,0 +1,13 @@
+﻿<Properties StartupItem="KerbalImprovedSaveSystem.csproj">
+  <MonoDevelop.Ide.Workspace ActiveConfiguration="Release" />
+  <MonoDevelop.Ide.Workbench ActiveDocument="Extensions\RectExtensions.cs">
+    <Files>
+      <File FileName="KerbalImprovedSaveSystem.cs" Line="5" Column="21" />
+      <File FileName="Extensions\RectExtensions.cs" Line="3" Column="29" />
+    </Files>
+  </MonoDevelop.Ide.Workbench>
+  <MonoDevelop.Ide.DebuggingService.Breakpoints>
+    <BreakpointStore />
+  </MonoDevelop.Ide.DebuggingService.Breakpoints>
+  <MonoDevelop.Ide.DebuggingService.PinnedWatches />
+</Properties>
