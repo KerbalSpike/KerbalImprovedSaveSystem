@@ -8,7 +8,7 @@ namespace KerbalImprovedSaveSystem
 	/// <summary>
 	/// Start Kerbal Improved Save System as soon as possible and keep loaded.
 	/// </summary>
-	[KSPAddon(KSPAddon.Startup.EveryScene, false)] 
+	[KSPAddon(KSPAddon.Startup.Flight, false)] 
 	public class KerbalImprovedSaveSystem : MonoBehaviour
 	{
 		// used to identify log entries of this mod
@@ -21,8 +21,7 @@ namespace KerbalImprovedSaveSystem
 		private bool _hasInitStyles = false;
 
 		// suggested default filename for savegame
-		private string defaultSaveFileName = "";
-		//private string selectedSaveFileName = "";
+		private string saveFileName = "";
 
 
 		/// <summary>
@@ -41,8 +40,9 @@ namespace KerbalImprovedSaveSystem
 
 				if (!_isVisible)
 				{
+					FlightDriver.SetPause(true);
 					_isVisible = true;
-					defaultSaveFileName = DateTime.Now.ToString("yyyyMMdd_HHmmss");
+					saveFileName = DateTime.Now.ToString("yyyyMMdd_HHmmss");
 					RenderingManager.AddToPostDrawQueue(0, OnDraw);
 				}
 			}
@@ -85,13 +85,13 @@ namespace KerbalImprovedSaveSystem
 			GUILayout.Label("Previous saves:", _labelStyle);
 
 			GUILayout.Label("Filename:", _labelStyle);
-			string selectedSaveFileName = GUILayout.TextField(defaultSaveFileName, _txtFieldStyle);
+			saveFileName = GUILayout.TextField(saveFileName, _txtFieldStyle);
 
 			GUILayout.BeginHorizontal();
 			GUILayout.FlexibleSpace(); // moves the following buttons to the right
 			if (GUILayout.Button("Save", _buttonStyle))
 			{
-				Save(selectedSaveFileName);
+				Save(saveFileName);
 				Close("SaveDialog completed.");
 			}
 			if (GUILayout.Button("Cancel", _buttonStyle))
@@ -140,7 +140,8 @@ namespace KerbalImprovedSaveSystem
 			// code to remove window
 			_isVisible = false;
 			RenderingManager.RemoveFromPostDrawQueue(0, OnDraw);
-			Debug.Log (modLogTag + reason);				
+			Debug.Log (modLogTag + reason);	
+			FlightDriver.SetPause(false);
 		}
 	}
 }
