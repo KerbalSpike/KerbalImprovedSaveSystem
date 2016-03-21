@@ -2,6 +2,7 @@
 using KSP.IO;
 using UnityEngine;
 using System;
+using System.Collections.Generic;
 
 namespace KerbalImprovedSaveSystem
 {
@@ -17,11 +18,15 @@ namespace KerbalImprovedSaveSystem
 		// stuff to configure the GUI
 		private static Rect _windowPosition = new Rect();
 		private static bool _isVisible = false;
-		private GUIStyle _windowStyle, _labelStyle, _buttonStyle, _txtFieldStyle;
+		private GUIStyle _windowStyle, _labelStyle, _buttonStyle, _txtFieldStyle, _listStyle;
 		private bool _hasInitStyles = false;
 
 		// suggested default filename for savegame
 		private string saveFileName = "";
+		// list of existing savegames
+		private List<string> existingSavegames;
+		// scroll position of the list of existing savegames
+		private Vector2 _scrollPos;
 
 
 		/// <summary>
@@ -30,7 +35,7 @@ namespace KerbalImprovedSaveSystem
 		void Update()
 		{
 			//on Alt-F5
-			if (GameSettings.QUICKSAVE.GetKey() && GameSettings.MODIFIER_KEY.GetKey())
+			if (Input.GetKey("f8")) //GameSettings.QUICKSAVE.GetKey() && GameSettings.MODIFIER_KEY.GetKey())
 			{
 				if (!_hasInitStyles)
 				{
@@ -42,6 +47,8 @@ namespace KerbalImprovedSaveSystem
 				{
 					FlightDriver.SetPause(true);
 					_isVisible = true;
+					// get lsit of filenames()
+					existingSavegames = new List<string>() { "savegame 1", "savegame 2", "savegame 3" };
 					saveFileName = DateTime.Now.ToString("yyyyMMdd_HHmmss");
 					RenderingManager.AddToPostDrawQueue(0, OnDraw);
 				}
@@ -82,7 +89,28 @@ namespace KerbalImprovedSaveSystem
 		{
 
 			GUILayout.BeginVertical();
-			GUILayout.Label("Previous saves:", _labelStyle);
+			GUILayout.Label("Previous savegames:", _labelStyle);
+
+			_scrollPos = GUILayout.BeginScrollView(_scrollPos, _listStyle);
+			int i = 0;
+			if (existingSavegames == null)
+				Debug.Log (modLogTag + "No existing savegames found.");
+			else
+			{
+				for ( ; i < existingSavegames.Count; i++)
+				{
+					var rect = new Rect(5, 20 * i, 300, 20);
+					if (rect.yMax < _scrollPos.y || rect.yMin > _scrollPos.y + 500)
+					{
+						continue;
+					}
+
+					string saveGameName = existingSavegames[i];
+					GUI.Label(rect, saveGameName,_labelStyle);
+				}
+			}
+			GUILayout.Space(20 * i);
+			GUILayout.EndScrollView();
 
 			GUILayout.Label("Filename:", _labelStyle);
 			saveFileName = GUILayout.TextField(saveFileName, _txtFieldStyle);
@@ -108,7 +136,8 @@ namespace KerbalImprovedSaveSystem
 		private void InitStyles()
 		{
 			_windowStyle = new GUIStyle(HighLogic.Skin.window);
-			_windowStyle.fixedWidth = 300f;
+			_windowStyle.fixedWidth = 310f;
+			_windowStyle.fixedHeight = 600f;
 
 			_labelStyle = new GUIStyle(HighLogic.Skin.label);
 			_labelStyle.stretchWidth = true;
@@ -118,13 +147,16 @@ namespace KerbalImprovedSaveSystem
 			_txtFieldStyle = new GUIStyle(HighLogic.Skin.textField);
 			_txtFieldStyle.stretchWidth = true;
 
+			_listStyle = new GUIStyle(HighLogic.Skin.scrollView);
+			//_listStyle.fixedHeight = 600f;
+			//_listStyle.fixedWidth = 300f;
+
 			_hasInitStyles = true;
 		}
 
 
 		private void Save(string selectedSaveFileName)
 		{
-			//code to save game
 			SaveMode s = SaveMode.OVERWRITE; // available SaveModes are: OVERWRITE, APPEND, ABORT
 			string filename = GamePersistence.SaveGame (selectedSaveFileName, HighLogic.SaveFolder, s);
 			Debug.Log (modLogTag + "Game saved in '" + filename + "'");
@@ -133,11 +165,12 @@ namespace KerbalImprovedSaveSystem
 
 		private void Close(string reason)
 		{
+			// save window position into config file
 			PluginConfiguration config = PluginConfiguration.CreateForType<KerbalImprovedSaveSystem>();
 			config.SetValue("Window Position", _windowPosition);
 			config.save();
 
-			// code to remove window
+			// code to remove window from UI
 			_isVisible = false;
 			RenderingManager.RemoveFromPostDrawQueue(0, OnDraw);
 			Debug.Log (modLogTag + reason);	
