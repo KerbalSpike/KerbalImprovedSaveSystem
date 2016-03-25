@@ -19,13 +19,13 @@ namespace KerbalImprovedSaveSystem
 		// stuff to configure the GUI
 		private static Rect _windowPosition = new Rect();
 		private static bool _isVisible = false;
-		private GUIStyle _windowStyle, _labelStyle, _buttonStyle, _txtFieldStyle, _listStyle;
+		private GUIStyle _windowStyle, _labelStyle, _buttonStyle, _altBtnStyle, _listBtnStyle, _txtFieldStyle, _listStyle;
 		private bool _hasInitStyles = false;
 
 		// savegame directory of the current came
 		private string saveGameDir;
 		// suggested default filename for savegame
-		private string saveFileName = "";
+		private string selectedFileName = "";
 		// list of existing savegames
 		private List<string> existingSaveGames;
 		// scroll position of the list of existing savegames
@@ -54,7 +54,7 @@ namespace KerbalImprovedSaveSystem
 					saveGameDir = KSPUtil.ApplicationRootPath + "saves/" + HighLogic.SaveFolder + "/";
 					existingSaveGames = getExistingSaves(saveGameDir);
 					//existingSavegames = new List<string>() { "savegame 1", "savegame 2", "savegame 3" };
-					saveFileName = DateTime.Now.ToString("yyyyMMdd_HHmmss");
+					selectedFileName = DateTime.Now.ToString("yyyyMMdd_HHmmss");
 					RenderingManager.AddToPostDrawQueue(0, OnDraw);
 				}
 			}
@@ -98,7 +98,7 @@ namespace KerbalImprovedSaveSystem
 		{
 
 			GUILayout.BeginVertical();
-			GUILayout.Label("Existing savegames:", _labelStyle);
+			GUILayout.Label(" Existing savegames:", _labelStyle);
 
 			_scrollPos = GUILayout.BeginScrollView(_scrollPos, _listStyle);
 			int i = 0;
@@ -111,30 +111,42 @@ namespace KerbalImprovedSaveSystem
 					var rect = new Rect(5, 20 * i, 285, 20);
 					if (rect.yMax < _scrollPos.y || rect.yMin > _scrollPos.y + 500)
 					{
-						//do not draw items outside the current scrallview
+						//do not draw items outside the current ScrollView
 						continue;
 					}
 
 					string saveGameName = existingSaveGames[i];
-					GUI.Label(rect, saveGameName, _labelStyle);
+					//GUI.Label(rect, saveGameName, _labelStyle);
+					if (GUILayout.Button(saveGameName, _listBtnStyle))
+					{
+						selectedFileName = saveGameName;
+					}
 				}
+//				RectOffset rctOff = _listStyle.padding;
+//				GUILayout.Label("Left: " + rctOff.left + " Right: " + rctOff.right, _labelStyle);
+//				GUILayout.Label("Top: " + rctOff.top + " Bottom: " + rctOff.bottom, _labelStyle);
 			}
 			GUILayout.Space(20 * i);
 			GUILayout.EndScrollView();
 
-			GUILayout.Label("Save game as:", _labelStyle);
-			saveFileName = GUILayout.TextField(saveFileName, _txtFieldStyle);
+			GUILayout.Label(" Save game as:", _labelStyle);
+			selectedFileName = GUILayout.TextField(selectedFileName, _txtFieldStyle);
 
 			GUILayout.BeginHorizontal();
-			GUILayout.FlexibleSpace(); // moves the following buttons to the right
-			if (GUILayout.Button("Save", _buttonStyle))
+			if (GUILayout.Button("Now", _altBtnStyle))
 			{
-				Save(saveFileName);
-				Close("SaveDialog completed.");
+				selectedFileName = DateTime.Now.ToString("yyyyMMdd_HHmmss");
+				;
 			}
+			GUILayout.FlexibleSpace(); // moves the following buttons to the right
 			if (GUILayout.Button("Cancel", _buttonStyle))
 			{
 				Close("SaveDialog aborted by user.");
+			}
+			if (GUILayout.Button("Save", _buttonStyle))
+			{
+				Save(selectedFileName);
+				Close("SaveDialog completed.");
 			}
 			GUILayout.EndHorizontal();
 			GUILayout.EndVertical();
@@ -151,16 +163,37 @@ namespace KerbalImprovedSaveSystem
 			_windowStyle = new GUIStyle(HighLogic.Skin.window);
 			_windowStyle.fixedWidth = 300f;
 			_windowStyle.fixedHeight = 500f;
+			_windowStyle.normal.textColor = Color.yellow;
+			//_windowStyle.onNormal.textColor = Color.yellow;
+			_windowStyle.hover.textColor = Color.yellow;
+			//_windowStyle.onHover.textColor = Color.yellow;
+			_windowStyle.padding.left = 6;
+			_windowStyle.padding.right = 6;
 
 			_labelStyle = new GUIStyle(HighLogic.Skin.label);
 			_labelStyle.stretchWidth = true;
 
 			_buttonStyle = new GUIStyle(HighLogic.Skin.button);
 
+			_altBtnStyle = new GUIStyle(HighLogic.Skin.button);
+			_altBtnStyle.normal.textColor = Color.yellow;
+			//_altBtnStyle.onNormal.textColor = Color.yellow;
+			_altBtnStyle.hover.textColor = Color.yellow;
+			//_altBtnStyle.onHover.textColor = Color.yellow;
+			_altBtnStyle.active.textColor = Color.yellow;
+			//_altBtnStyle.onActive.textColor = Color.yellow;
+
+			_listBtnStyle = new GUIStyle(HighLogic.Skin.button);
+			_listBtnStyle.normal.background = null;
+			_listBtnStyle.onNormal.background = null;
+			_listBtnStyle.onHover.background = HighLogic.Skin.button.normal.background;
+
 			_txtFieldStyle = new GUIStyle(HighLogic.Skin.textField);
 			_txtFieldStyle.stretchWidth = true;
 
 			_listStyle = new GUIStyle(HighLogic.Skin.scrollView);
+			_listStyle.padding.left = 6;
+			_listStyle.padding.right = 6;
 			//_listStyle.fixedHeight = 600f;
 			//_listStyle.fixedWidth = 300f;
 

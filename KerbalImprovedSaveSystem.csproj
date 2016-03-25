@@ -28,7 +28,7 @@
     <ConsolePause>false</ConsolePause>
     <CustomCommands>
       <CustomCommands>
-        <Command type="AfterBuild" command="xcopy &quot;$(TargetDir)\*.*&quot; &quot;D:\Projects\KSP_mods\Kerbal Space Program\GameData\$(ProjectName)\Plugins&quot; /D /E /C /R /I /K /Y" externalConsole="True" pauseExternalConsole="True" />
+        <Command type="AfterBuild" command="xcopy &quot;$(TargetDir)\*.*&quot; &quot;C:\Development\KSP_mods\Kerbal Space Program\GameData\$(ProjectName)\Plugins&quot; /D /E /C /R /I /K /Y" externalConsole="True" pauseExternalConsole="True" />
       </CustomCommands>
     </CustomCommands>
   </PropertyGroup>
