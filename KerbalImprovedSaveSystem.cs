@@ -50,11 +50,9 @@ namespace KerbalImprovedSaveSystem
 				{
 					FlightDriver.SetPause(true);
 					_isVisible = true;
-					//Debug.Log(modLogTag + "HighLogic.SaveFolder = " + HighLogic.SaveFolder);
 					saveGameDir = KSPUtil.ApplicationRootPath + "saves/" + HighLogic.SaveFolder + "/";
 					existingSaveGames = getExistingSaves(saveGameDir);
-					//existingSavegames = new List<string>() { "savegame 1", "savegame 2", "savegame 3" };
-					selectedFileName = DateTime.Now.ToString("yyyyMMdd_HHmmss");
+					selectedFileName = DateTime.Now.ToString("yyyyMMdd_HHmmss_" + FlightGlobals.ActiveVessel.vesselName);
 					RenderingManager.AddToPostDrawQueue(0, OnDraw);
 				}
 			}
@@ -98,7 +96,7 @@ namespace KerbalImprovedSaveSystem
 		{
 
 			GUILayout.BeginVertical();
-			GUILayout.Label(" Existing savegames:", _labelStyle);
+			GUILayout.Label("Existing savegames:", _labelStyle);
 
 			_scrollPos = GUILayout.BeginScrollView(_scrollPos, _listStyle);
 			int i = 0;
@@ -116,27 +114,30 @@ namespace KerbalImprovedSaveSystem
 					}
 
 					string saveGameName = existingSaveGames[i];
-					//GUI.Label(rect, saveGameName, _labelStyle);
 					if (GUILayout.Button(saveGameName, _listBtnStyle))
 					{
 						selectedFileName = saveGameName;
 					}
 				}
-//				RectOffset rctOff = _listStyle.padding;
-//				GUILayout.Label("Left: " + rctOff.left + " Right: " + rctOff.right, _labelStyle);
-//				GUILayout.Label("Top: " + rctOff.top + " Bottom: " + rctOff.bottom, _labelStyle);
+//				RectOffset rctOff = _txtFieldStyle.margin;
+//				GUILayout.Label("TxF - Left: " + rctOff.left + " Right: " + rctOff.right, _labelStyle);
+//				rctOff = _listStyle.margin;
+//				GUILayout.Label("ScV - Left: " + rctOff.left + " Right: " + rctOff.right, _labelStyle);
+//				rctOff = _labelStyle.margin;
+//				GUILayout.Label("Lbl - Left: " + rctOff.left + " Right: " + rctOff.right, _labelStyle);
+//				rctOff = _altBtnStyle.margin;
+//				GUILayout.Label("Btn - Left: " + rctOff.left + " Right: " + rctOff.right, _labelStyle);
 			}
 			GUILayout.Space(20 * i);
 			GUILayout.EndScrollView();
 
-			GUILayout.Label(" Save game as:", _labelStyle);
+			GUILayout.Label("Save game as:", _labelStyle);
 			selectedFileName = GUILayout.TextField(selectedFileName, _txtFieldStyle);
 
 			GUILayout.BeginHorizontal();
-			if (GUILayout.Button("Now", _altBtnStyle))
+			if (GUILayout.Button("Now + shipname", _altBtnStyle))
 			{
-				selectedFileName = DateTime.Now.ToString("yyyyMMdd_HHmmss");
-				;
+				selectedFileName = DateTime.Now.ToString("yyyyMMdd_HHmmss_" + FlightGlobals.ActiveVessel.vesselName);
 			}
 			GUILayout.FlexibleSpace(); // moves the following buttons to the right
 			if (GUILayout.Button("Cancel", _buttonStyle))
@@ -161,12 +162,14 @@ namespace KerbalImprovedSaveSystem
 		private void InitStyles()
 		{
 			_windowStyle = new GUIStyle(HighLogic.Skin.window);
-			_windowStyle.fixedWidth = 300f;
+			_windowStyle.fixedWidth = 400f;
 			_windowStyle.fixedHeight = 500f;
 			_windowStyle.normal.textColor = Color.yellow;
-			//_windowStyle.onNormal.textColor = Color.yellow;
+			_windowStyle.onNormal.textColor = Color.yellow;
 			_windowStyle.hover.textColor = Color.yellow;
-			//_windowStyle.onHover.textColor = Color.yellow;
+			_windowStyle.onHover.textColor = Color.yellow;
+			_windowStyle.active.textColor = Color.yellow;
+			_windowStyle.onActive.textColor = Color.yellow;
 			_windowStyle.padding.left = 6;
 			_windowStyle.padding.right = 6;
 
@@ -177,11 +180,8 @@ namespace KerbalImprovedSaveSystem
 
 			_altBtnStyle = new GUIStyle(HighLogic.Skin.button);
 			_altBtnStyle.normal.textColor = Color.yellow;
-			//_altBtnStyle.onNormal.textColor = Color.yellow;
 			_altBtnStyle.hover.textColor = Color.yellow;
-			//_altBtnStyle.onHover.textColor = Color.yellow;
 			_altBtnStyle.active.textColor = Color.yellow;
-			//_altBtnStyle.onActive.textColor = Color.yellow;
 
 			_listBtnStyle = new GUIStyle(HighLogic.Skin.button);
 			_listBtnStyle.normal.background = null;
@@ -194,6 +194,8 @@ namespace KerbalImprovedSaveSystem
 			_listStyle = new GUIStyle(HighLogic.Skin.scrollView);
 			_listStyle.padding.left = 6;
 			_listStyle.padding.right = 6;
+			_listStyle.margin.left = 4;
+			_listStyle.margin.right = 4;
 			//_listStyle.fixedHeight = 600f;
 			//_listStyle.fixedWidth = 300f;
 
