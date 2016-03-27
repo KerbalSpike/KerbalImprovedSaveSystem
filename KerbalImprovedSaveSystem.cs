@@ -37,17 +37,17 @@ namespace KerbalImprovedSaveSystem
 		/// </summary>
 		void Update()
 		{
-			//show window on F8
-			if (Input.GetKey(KeyCode.F8)) //GameSettings.QUICKSAVE.GetKey() && GameSettings.MODIFIER_KEY.GetKey())
+			if (!_isVisible)
 			{
-				if (!_hasInitStyles)
+				// show window on F8
+				if (Input.GetKey(KeyCode.F8)) //GameSettings.QUICKSAVE.GetKey() && GameSettings.MODIFIER_KEY.GetKey())
 				{
-					Debug.Log(modLogTag + "Init GUI.");
-					InitStyles();
-				}
-
-				if (!_isVisible)
-				{
+					if (!_hasInitStyles)
+					{
+						Debug.Log(modLogTag + "Init GUI.");
+						InitStyles();
+					}
+						
 					FlightDriver.SetPause(true);
 					_isVisible = true;
 					saveGameDir = KSPUtil.ApplicationRootPath + "saves/" + HighLogic.SaveFolder + "/";
@@ -55,11 +55,9 @@ namespace KerbalImprovedSaveSystem
 					selectedFileName = DateTime.Now.ToString("yyyyMMdd_HHmmss_") + FlightGlobals.ActiveVessel.vesselName;
 					RenderingManager.AddToPostDrawQueue(0, OnDraw);
 				}
-			}
-
-			// allow aborting window by pressing ESC
-			if (_isVisible)
+			} else // if visible...
 			{
+				// allow aborting window by pressing ESC
 				if (Input.GetKey(KeyCode.Escape))
 				{
 					Close("SaveDialog aborted by user.");
@@ -234,7 +232,6 @@ namespace KerbalImprovedSaveSystem
 					// (and will be overwritten every time a savegame is loaded anyway)
 					if (!sav.Equals(saveDir + "persistent.sfs"))
 					{
-						Debug.Log(modLogTag + "savegame found: " + sav);
 						// remove path and ".sfs" from filenames and add them to list
 						saveGames.Add(sav.Substring(sav.LastIndexOf("/") + 1).Replace(".sfs", ""));
 					}
