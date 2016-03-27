@@ -37,8 +37,8 @@ namespace KerbalImprovedSaveSystem
 		/// </summary>
 		void Update()
 		{
-			//on Alt-F5
-			if (Input.GetKey("f8")) //GameSettings.QUICKSAVE.GetKey() && GameSettings.MODIFIER_KEY.GetKey())
+			//show window on F8
+			if (Input.GetKey(KeyCode.F8)) //GameSettings.QUICKSAVE.GetKey() && GameSettings.MODIFIER_KEY.GetKey())
 			{
 				if (!_hasInitStyles)
 				{
@@ -54,6 +54,15 @@ namespace KerbalImprovedSaveSystem
 					existingSaveGames = getExistingSaves(saveGameDir);
 					selectedFileName = DateTime.Now.ToString("yyyyMMdd_HHmmss_") + FlightGlobals.ActiveVessel.vesselName;
 					RenderingManager.AddToPostDrawQueue(0, OnDraw);
+				}
+			}
+
+			// allow aborting window by pressing ESC
+			if (_isVisible)
+			{
+				if (Input.GetKey(KeyCode.Escape))
+				{
+					Close("SaveDialog aborted by user.");
 				}
 			}
 		}
