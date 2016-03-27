@@ -52,7 +52,7 @@ namespace KerbalImprovedSaveSystem
 					_isVisible = true;
 					saveGameDir = KSPUtil.ApplicationRootPath + "saves/" + HighLogic.SaveFolder + "/";
 					existingSaveGames = getExistingSaves(saveGameDir);
-					selectedFileName = DateTime.Now.ToString("yyyyMMdd_HHmmss_" + FlightGlobals.ActiveVessel.vesselName);
+					selectedFileName = DateTime.Now.ToString("yyyyMMdd_HHmmss_") + FlightGlobals.ActiveVessel.vesselName;
 					RenderingManager.AddToPostDrawQueue(0, OnDraw);
 				}
 			}
@@ -137,7 +137,7 @@ namespace KerbalImprovedSaveSystem
 			GUILayout.BeginHorizontal();
 			if (GUILayout.Button("Now + shipname", _altBtnStyle))
 			{
-				selectedFileName = DateTime.Now.ToString("yyyyMMdd_HHmmss_" + FlightGlobals.ActiveVessel.vesselName);
+				selectedFileName = DateTime.Now.ToString("yyyyMMdd_HHmmss_") + FlightGlobals.ActiveVessel.vesselName;
 			}
 			GUILayout.FlexibleSpace(); // moves the following buttons to the right
 			if (GUILayout.Button("Cancel", _buttonStyle))
