@@ -24,11 +24,11 @@ namespace KerbalImprovedSaveSystem
 
 		// savegame directory of the current came
 		private string saveGameDir;
-		// suggested default filename for savegame
+		// currently selected filename for savegame
 		private string selectedFileName = "";
 		// list of existing savegames
 		private List<string> existingSaveGames;
-		// scroll position of the list of existing savegames
+		// scroll position in the list of existing savegames
 		private Vector2 _scrollPos;
 
 
@@ -123,6 +123,7 @@ namespace KerbalImprovedSaveSystem
 					string saveGameName = existingSaveGames[i];
 					if (saveGameName == selectedFileName)
 					{
+						// highlight the list item that is currently selected
 						if (GUILayout.Button(saveGameName, _listSelectionStyle))
 						{
 							selectedFileName = saveGameName;
@@ -221,18 +222,17 @@ namespace KerbalImprovedSaveSystem
 			_listStyle.padding.right = 6;
 			_listStyle.margin.left = 4;
 			_listStyle.margin.right = 4;
-			//_listStyle.fixedHeight = 600f;
-			//_listStyle.fixedWidth = 300f;
 
 			_hasInitStyles = true;
 		}
 
 
 		/// <summary>
-		/// Gets the existing savegames (*.sfs) in the specified directory WITHOUT the 
-		/// special "persistent.sfs" file.
+		/// Gets the existing savegame filenames (*.sfs) in the specified directory WITHOUT the 
+		/// special "persistent.sfs" file (that is special in KSP and will be overwritten
+		/// every time a savegame is loaded anyway).
 		/// </summary>
-		/// <returns>List of existing savegames without their path.</returns>
+		/// <returns>List of existing savegames without their paths and extensions.</returns>
 		/// <param name="saveFolder">Directory to search.</param>
 		private List<string> getExistingSaves(string saveDir)
 		{
