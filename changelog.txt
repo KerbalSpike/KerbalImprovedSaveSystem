@@ -1,0 +1,6 @@
+0.9.1, 2016-04-05
+	Changed:	Updated README file.
+	Added:		Changelog (changelog.txt).
+
+0.9, 2016-04-05
+	Added: Highlighting of currently selected savegame in list.

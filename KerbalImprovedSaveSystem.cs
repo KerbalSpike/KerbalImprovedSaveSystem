@@ -146,7 +146,7 @@ namespace KerbalImprovedSaveSystem
 			GUILayout.BeginHorizontal();
 			if (GUILayout.Button("Now + shipname", _altBtnStyle))
 			{
-				selectedFileName = DateTime.Now.ToString("yyyyMMdd_HHmmss_" + FlightGlobals.ActiveVessel.vesselName);
+				selectedFileName = DateTime.Now.ToString("yyyyMMdd_HHmmss_") + FlightGlobals.ActiveVessel.vesselName;
 			}
 			GUILayout.FlexibleSpace(); // moves the following buttons to the right
 			if (GUILayout.Button("Cancel", _buttonStyle))

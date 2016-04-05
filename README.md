@@ -1,4 +1,6 @@
+==================================
 KISS - Kerbal Improved Save System
+==================================
 
 is an add-on for the game Kerbal Space Program that provides an improved "Save game as..." mechanic while in flight.
 
@@ -9,9 +11,10 @@ In addition KISS provides the following improvements:
 
 KISS allows you to easily pick a savegame to overwrite or to create a variation of a previous quicksave without the need to memorize quicksave names and without the need to type the full name every time.
 
-====================
++++++++++++++++++++++++++++++++++++++++++++++++++++
 Current version: 0.9 - (Kerbal Space Program 1.0.5)
-====================
++++++++++++++++++++++++++++++++++++++++++++++++++++
+See changelog.txt for list of changes.
 
 
 Planned updates ("soon (TM)"):
