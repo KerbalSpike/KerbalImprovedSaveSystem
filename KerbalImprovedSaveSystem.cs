@@ -19,7 +19,7 @@ namespace KerbalImprovedSaveSystem
 		// stuff to configure the GUI
 		private static Rect _windowPosition = new Rect();
 		private static bool _isVisible = false;
-		private GUIStyle _windowStyle, _labelStyle, _buttonStyle, _altBtnStyle, _listBtnStyle, _txtFieldStyle, _listStyle;
+		private GUIStyle _windowStyle, _labelStyle, _buttonStyle, _altBtnStyle, _listBtnStyle, _listSelectionStyle, _txtFieldStyle, _listStyle;
 		private bool _hasInitStyles = false;
 
 		// savegame directory of the current came
@@ -114,19 +114,28 @@ namespace KerbalImprovedSaveSystem
 					}
 
 					string saveGameName = existingSaveGames[i];
-					if (GUILayout.Button(saveGameName, _listBtnStyle))
+					if (saveGameName == selectedFileName)
 					{
-						selectedFileName = saveGameName;
+						if (GUILayout.Button(saveGameName, _listSelectionStyle))
+						{
+							selectedFileName = saveGameName;
+						}
+					} else
+					{		
+						if (GUILayout.Button(saveGameName, _listBtnStyle))
+						{
+							selectedFileName = saveGameName;
+						}
 					}
 				}
-//				RectOffset rctOff = _txtFieldStyle.margin;
-//				GUILayout.Label("TxF - Left: " + rctOff.left + " Right: " + rctOff.right, _labelStyle);
-//				rctOff = _listStyle.margin;
-//				GUILayout.Label("ScV - Left: " + rctOff.left + " Right: " + rctOff.right, _labelStyle);
-//				rctOff = _labelStyle.margin;
-//				GUILayout.Label("Lbl - Left: " + rctOff.left + " Right: " + rctOff.right, _labelStyle);
-//				rctOff = _altBtnStyle.margin;
-//				GUILayout.Label("Btn - Left: " + rctOff.left + " Right: " + rctOff.right, _labelStyle);
+				//				RectOffset rctOff = _txtFieldStyle.margin;
+				//				GUILayout.Label("TxF - Left: " + rctOff.left + " Right: " + rctOff.right, _labelStyle);
+				//				rctOff = _listStyle.margin;
+				//				GUILayout.Label("ScV - Left: " + rctOff.left + " Right: " + rctOff.right, _labelStyle);
+				//				rctOff = _labelStyle.margin;
+				//				GUILayout.Label("Lbl - Left: " + rctOff.left + " Right: " + rctOff.right, _labelStyle);
+				//				rctOff = _altBtnStyle.margin;
+				//				GUILayout.Label("Btn - Left: " + rctOff.left + " Right: " + rctOff.right, _labelStyle);
 			}
 			GUILayout.Space(20 * i);
 			GUILayout.EndScrollView();
@@ -184,9 +193,18 @@ namespace KerbalImprovedSaveSystem
 			_altBtnStyle.active.textColor = Color.yellow;
 
 			_listBtnStyle = new GUIStyle(HighLogic.Skin.button);
+			_listBtnStyle.hover.background = _listBtnStyle.normal.background;
 			_listBtnStyle.normal.background = null;
-			_listBtnStyle.onNormal.background = null;
-			_listBtnStyle.onHover.background = HighLogic.Skin.button.normal.background;
+			//_listBtnStyle.onNormal.background = null;
+
+
+			_listSelectionStyle = new GUIStyle(HighLogic.Skin.button);
+			_listSelectionStyle.normal.background = _listSelectionStyle.active.background;
+			_listSelectionStyle.hover.background = _listSelectionStyle.active.background;
+			_listSelectionStyle.normal.textColor = Color.yellow;
+			_listSelectionStyle.hover.textColor = Color.yellow;
+			//_listSelectionStyle.active.textColor = Color.yellow;
+			//_listSelectionStyle.active.background = HighLogic.Skin.button.active.background;
 
 			_txtFieldStyle = new GUIStyle(HighLogic.Skin.textField);
 			_txtFieldStyle.stretchWidth = true;
