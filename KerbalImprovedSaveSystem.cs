@@ -22,6 +22,11 @@ namespace KerbalImprovedSaveSystem
 		private GUIStyle _windowStyle, _labelStyle, _buttonStyle, _altBtnStyle, _listBtnStyle, _listSelectionStyle, _txtFieldStyle, _listStyle;
 		private bool _hasInitStyles = false;
 
+		// stuff to detect double clicks
+		private bool dblClicked = false;
+		private DateTime lastClickTime;
+		public TimeSpan catchTime = TimeSpan.FromMilliseconds(250);
+
 		// savegame directory of the current came
 		private string saveGameDir;
 		// currently selected filename for savegame
@@ -55,8 +60,37 @@ namespace KerbalImprovedSaveSystem
 					selectedFileName = DateTime.Now.ToString("yyyyMMdd_HHmmss_") + FlightGlobals.ActiveVessel.vesselName;
 					RenderingManager.AddToPostDrawQueue(0, OnDraw);
 				}
+
+//				// detect double clicks
+//				if (Input.GetMouseButtonDown(0))
+//				{
+//					if (Time.time - lastClickTime < catchTime)
+//					{
+//						//double click
+//						Debug.Log(modLogTag + "Double click");
+//						dblClicked = true;
+//					} else
+//					{
+//						//normal click
+//					}
+//					lastClickTime = Time.time;
+//				}
+
 			} else // if visible...
 			{
+				if (Input.GetMouseButtonDown(0))
+				{
+					if (DateTime.Now - lastClickTime < catchTime)
+					{
+						dblClicked = true;
+					} else
+					{
+						//normal click
+						dblClicked = false;
+					}
+					lastClickTime = DateTime.Now;
+				}
+
 				// allow aborting window by pressing ESC
 				if (Input.GetKey(KeyCode.Escape))
 				{
@@ -94,6 +128,20 @@ namespace KerbalImprovedSaveSystem
 			}
 		}
 
+		//		void OnGUI()
+		//		{
+		//			Event e = Event.current;
+		//			if (e.isMouse && e.type == EventType.MouseDown && e.clickCount == 2)
+		//			{
+		//				// Double click event
+		//				Debug.Log(modLogTag + "Double click");
+		//				dblClicked = true;
+		//			} else
+		//			{
+		//				dblClicked = false;
+		//			}
+		//		}
+
 
 		/// <summary>
 		/// Handles all the GUI drawing/layout.
@@ -121,18 +169,20 @@ namespace KerbalImprovedSaveSystem
 					}
 
 					string saveGameName = existingSaveGames[i];
+					GUIStyle _renderStyle = _listBtnStyle;
 					if (saveGameName == selectedFileName)
 					{
 						// highlight the list item that is currently selected
-						if (GUILayout.Button(saveGameName, _listSelectionStyle))
+						_renderStyle = _listSelectionStyle;
+					}
+					if (GUILayout.Button(saveGameName, _renderStyle))
+					{
+						selectedFileName = saveGameName;
+						if (dblClicked)
 						{
-							selectedFileName = saveGameName;
-						}
-					} else
-					{		
-						if (GUILayout.Button(saveGameName, _listBtnStyle))
-						{
-							selectedFileName = saveGameName;
+							dblClicked = false;
+							Save(selectedFileName);
+							Close("SaveDialog completed.");
 						}
 					}
 				}
