@@ -8,12 +8,12 @@ using System.IO;
 namespace KerbalImprovedSaveSystem
 {
 	/// <summary>
-	/// Start Kerbal Improved Save System as soon as possible and keep loaded.
+	/// Start Kerbal Improved Save System when in a flight scene.
 	/// </summary>
 	[KSPAddon(KSPAddon.Startup.Flight, false)] 
 	public class KerbalImprovedSaveSystem : MonoBehaviour
 	{
-		// used to identify log entries of this mod
+		// used to identify log entries of this plugin
 		public static string modLogTag = "[KISS]: ";
 
 		// stuff to configure the GUI
@@ -61,7 +61,7 @@ namespace KerbalImprovedSaveSystem
 					RenderingManager.AddToPostDrawQueue(0, OnDraw);
 				}
 
-//				// detect double clicks
+				// detect double clicks //not working when paused... (no events?)
 //				if (Input.GetMouseButtonDown(0))
 //				{
 //					if (Time.time - lastClickTime < catchTime)
@@ -78,6 +78,7 @@ namespace KerbalImprovedSaveSystem
 
 			} else // if visible...
 			{
+				// detect double clicks
 				if (Input.GetMouseButtonDown(0))
 				{
 					if (DateTime.Now - lastClickTime < catchTime)
@@ -118,29 +119,15 @@ namespace KerbalImprovedSaveSystem
 
 		private void OnDraw()
 		{
-			_windowPosition = GUILayout.Window(1337, _windowPosition, OnWindow, "Kerbal Improved Save System", _windowStyle);
-
 			if (_windowPosition.x == 0f && _windowPosition.y == 0f)
 			{
 				PluginConfiguration config = PluginConfiguration.CreateForType<KerbalImprovedSaveSystem>();
 				config.load();
 				_windowPosition = config.GetValue<Rect>("Window Position", _windowPosition.CenterScreen());
 			}
-		}
 
-		//		void OnGUI()
-		//		{
-		//			Event e = Event.current;
-		//			if (e.isMouse && e.type == EventType.MouseDown && e.clickCount == 2)
-		//			{
-		//				// Double click event
-		//				Debug.Log(modLogTag + "Double click");
-		//				dblClicked = true;
-		//			} else
-		//			{
-		//				dblClicked = false;
-		//			}
-		//		}
+			_windowPosition = GUILayout.Window(1337, _windowPosition, OnWindow, "Kerbal Improved Save System", _windowStyle);
+		}
 
 
 		/// <summary>
@@ -186,14 +173,6 @@ namespace KerbalImprovedSaveSystem
 						}
 					}
 				}
-				//				RectOffset rctOff = _txtFieldStyle.margin;
-				//				GUILayout.Label("TxF - Left: " + rctOff.left + " Right: " + rctOff.right, _labelStyle);
-				//				rctOff = _listStyle.margin;
-				//				GUILayout.Label("ScV - Left: " + rctOff.left + " Right: " + rctOff.right, _labelStyle);
-				//				rctOff = _labelStyle.margin;
-				//				GUILayout.Label("Lbl - Left: " + rctOff.left + " Right: " + rctOff.right, _labelStyle);
-				//				rctOff = _altBtnStyle.margin;
-				//				GUILayout.Label("Btn - Left: " + rctOff.left + " Right: " + rctOff.right, _labelStyle);
 			}
 			GUILayout.Space(20 * i);
 			GUILayout.EndScrollView();
