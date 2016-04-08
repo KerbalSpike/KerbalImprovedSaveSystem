@@ -33,6 +33,8 @@ namespace KerbalImprovedSaveSystem
 		private string selectedFileName = "";
 		// list of existing savegames
 		private List<string> existingSaveGames;
+		// flag to enforce/disable overwrite confirmations
+		private bool confirmOverwrite = false;
 		// scroll position in the list of existing savegames
 		private Vector2 _scrollPos;
 
@@ -99,22 +101,6 @@ namespace KerbalImprovedSaveSystem
 				}
 			}
 		}
-
-		//		void Awake()
-		//		{
-		//			PluginConfiguration config = PluginConfiguration.CreateForType<KerbalImprovedSaveSystem>();
-		//
-		//			config.SetValue("Window Position", _windowPosition);
-		//			config.save();
-		//		}
-		//
-		//		void OnDestroy()
-		//		{
-		//			PluginConfiguration config = PluginConfiguration.CreateForType<KerbalImprovedSaveSystem>();
-		//
-		//			config.load();
-		//			_windowPosition = config.GetValue<Rect>("Window Position");
-		//		}
 
 
 		private void OnDraw()
@@ -296,9 +282,17 @@ namespace KerbalImprovedSaveSystem
 		/// <param name="selectedSaveFileName">File name to save the game into.</param>
 		private void Save(string selectedSaveFileName)
 		{
-			SaveMode s = SaveMode.OVERWRITE; // available SaveModes are: OVERWRITE, APPEND, ABORT
-			string filename = GamePersistence.SaveGame(selectedSaveFileName, HighLogic.SaveFolder, s);
-			Debug.Log(modLogTag + "Game saved in '" + filename + "'");
+			if (confirmOverwrite && existingSaveGames.Contains(selectedFileName))
+			{
+				// TODO dialog asking for confirmation before overwriting file
+//				KISSDialog confirm = new KISSDialog();
+//				confirm.Show(selectedFileName);
+			} else
+			{
+				SaveMode s = SaveMode.OVERWRITE; // available SaveModes are: OVERWRITE, APPEND, ABORT
+				string filename = GamePersistence.SaveGame(selectedSaveFileName, HighLogic.SaveFolder, s);
+				Debug.Log(modLogTag + "Game saved in '" + filename + "'");
+			}
 		}
 
 

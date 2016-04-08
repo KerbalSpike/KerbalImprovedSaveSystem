@@ -47,6 +47,7 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Extensions\RectExtensions.cs" />
     <Compile Include="KerbalImprovedSaveSystem.cs" />
+    <Compile Include="KISSDialog.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>
