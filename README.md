@@ -4,8 +4,8 @@ KISS - Kerbal Improved Save System
 
 is an add-on for the game Kerbal Space Program that provides an improved "Save game as..." mechanic while in flight.  
 
-The KISS window is activated by pressing "F8" and provides the same functionality as the stock "Quicksave as..." dialog ("MOD"+"F5") for creating named savegames. 
-In addition KISS provides the following improvements: 
+The KISS window is activated by pressing "F8" and provides the same functionality as the stock "Quicksave as..." dialog ("MOD"+"F5") for creating named savegames.
+In addition KISS provides the following improvements:  
 1) the suggested name for the new savegame is the current timestamp and the name of the active vessel (ship) (YYYYMMDD_hhmmss-{vesselName}) instead of the generic "quicksave [#<number>]" pattern.  
 2) It lists all existing savegames for your current game and allows you to select a previous savegame to overwrite it.  
 
