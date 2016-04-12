@@ -103,6 +103,9 @@ namespace KerbalImprovedSaveSystem
 		}
 
 
+		/// <summary>
+		/// Raises the draw event and handles window positioning.
+		/// </summary>
 		private void OnDraw()
 		{
 			if (_windowPosition.x == 0f && _windowPosition.y == 0f)
@@ -218,16 +221,12 @@ namespace KerbalImprovedSaveSystem
 			_listBtnStyle = new GUIStyle(HighLogic.Skin.button);
 			_listBtnStyle.hover.background = _listBtnStyle.normal.background;
 			_listBtnStyle.normal.background = null;
-			//_listBtnStyle.onNormal.background = null;
-
 
 			_listSelectionStyle = new GUIStyle(HighLogic.Skin.button);
 			_listSelectionStyle.normal.background = _listSelectionStyle.active.background;
 			_listSelectionStyle.hover.background = _listSelectionStyle.active.background;
 			_listSelectionStyle.normal.textColor = Color.yellow;
 			_listSelectionStyle.hover.textColor = Color.yellow;
-			//_listSelectionStyle.active.textColor = Color.yellow;
-			//_listSelectionStyle.active.background = HighLogic.Skin.button.active.background;
 
 			_txtFieldStyle = new GUIStyle(HighLogic.Skin.textField);
 			_txtFieldStyle.stretchWidth = true;
