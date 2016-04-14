@@ -28,18 +28,18 @@
     <ConsolePause>false</ConsolePause>
     <CustomCommands>
       <CustomCommands>
-        <Command type="AfterBuild" command="xcopy &quot;$(TargetDir)\*.*&quot; &quot;..\Kerbal Space Program\GameData\$(ProjectName)\Plugins&quot; /D /E /C /R /I /K /Y" externalConsole="True" pauseExternalConsole="True" />
+        <Command type="AfterBuild" command="xcopy &quot;$(TargetDir)\*.*&quot; &quot;..\Kerbal Space Program 1.1\GameData\$(ProjectName)\Plugins&quot; /D /E /C /R /I /K /Y" externalConsole="True" pauseExternalConsole="True" />
       </CustomCommands>
     </CustomCommands>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="System" />
     <Reference Include="UnityEngine">
-      <HintPath>..\Kerbal Space Program\KSP_Data\Managed\UnityEngine.dll</HintPath>
+      <HintPath>..\Kerbal Space Program 1.1\KSP_Data\Managed\UnityEngine.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="Assembly-CSharp">
-      <HintPath>..\Kerbal Space Program\KSP_Data\Managed\Assembly-CSharp.dll</HintPath>
+      <HintPath>..\Kerbal Space Program 1.1\KSP_Data\Managed\Assembly-CSharp.dll</HintPath>
       <Private>False</Private>
     </Reference>
   </ItemGroup>

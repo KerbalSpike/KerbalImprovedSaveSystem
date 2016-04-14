@@ -56,11 +56,11 @@ namespace KerbalImprovedSaveSystem
 					}
 						
 					FlightDriver.SetPause(true);
-					_isVisible = true;
 					saveGameDir = KSPUtil.ApplicationRootPath + "saves/" + HighLogic.SaveFolder + "/";
 					existingSaveGames = getExistingSaves(saveGameDir);
 					selectedFileName = DateTime.Now.ToString("yyyyMMdd_HHmmss_") + FlightGlobals.ActiveVessel.vesselName;
-					RenderingManager.AddToPostDrawQueue(0, OnDraw);
+					_isVisible = true;
+					//RenderingManager.AddToPostDrawQueue(0, OnDraw);
 				}
 
 				// detect double clicks //not working when paused... (no events?)
@@ -104,6 +104,16 @@ namespace KerbalImprovedSaveSystem
 
 
 		/// <summary>
+		/// Raises the GUI event.
+		/// </summary>
+		private void OnGUI()
+		{
+			if (_isVisible)
+				OnDraw();
+		}
+
+
+		/// <summary>
 		/// Raises the draw event and handles window positioning.
 		/// </summary>
 		private void OnDraw()
@@ -115,7 +125,7 @@ namespace KerbalImprovedSaveSystem
 				_windowPosition = config.GetValue<Rect>("Window Position", _windowPosition.CenterScreen());
 			}
 
-			_windowPosition = GUILayout.Window(1337, _windowPosition, OnWindow, "Kerbal Improved Save System", _windowStyle);
+			_windowPosition = GUILayout.Window(this.GetInstanceID(), _windowPosition, OnWindow, "Kerbal Improved Save System", _windowStyle);
 		}
 
 
@@ -163,7 +173,7 @@ namespace KerbalImprovedSaveSystem
 					}
 				}
 			}
-			GUILayout.Space(20 * i);
+			GUILayout.Space(40);
 			GUILayout.EndScrollView();
 
 			GUILayout.Label("Save game as:", _labelStyle);
@@ -196,15 +206,16 @@ namespace KerbalImprovedSaveSystem
 		/// </summary>
 		private void InitStyles()
 		{
+			Color myYellow = HighLogic.Skin.textField.normal.textColor;
 			_windowStyle = new GUIStyle(HighLogic.Skin.window);
 			_windowStyle.fixedWidth = 400f;
 			_windowStyle.fixedHeight = 500f;
-			_windowStyle.normal.textColor = Color.yellow;
-			_windowStyle.onNormal.textColor = Color.yellow;
-			_windowStyle.hover.textColor = Color.yellow;
-			_windowStyle.onHover.textColor = Color.yellow;
-			_windowStyle.active.textColor = Color.yellow;
-			_windowStyle.onActive.textColor = Color.yellow;
+			_windowStyle.normal.textColor = myYellow; //Color.yellow;
+			_windowStyle.onNormal.textColor = myYellow;
+			_windowStyle.hover.textColor = myYellow;
+			_windowStyle.onHover.textColor = myYellow;
+			_windowStyle.active.textColor = myYellow;
+			_windowStyle.onActive.textColor = myYellow;
 			_windowStyle.padding.left = 6;
 			_windowStyle.padding.right = 6;
 
@@ -214,9 +225,9 @@ namespace KerbalImprovedSaveSystem
 			_buttonStyle = new GUIStyle(HighLogic.Skin.button);
 
 			_altBtnStyle = new GUIStyle(HighLogic.Skin.button);
-			_altBtnStyle.normal.textColor = Color.yellow;
-			_altBtnStyle.hover.textColor = Color.yellow;
-			_altBtnStyle.active.textColor = Color.yellow;
+			_altBtnStyle.normal.textColor = myYellow;
+			_altBtnStyle.hover.textColor = myYellow;
+			_altBtnStyle.active.textColor = myYellow;
 
 			_listBtnStyle = new GUIStyle(HighLogic.Skin.button);
 			_listBtnStyle.hover.background = _listBtnStyle.normal.background;
@@ -225,8 +236,8 @@ namespace KerbalImprovedSaveSystem
 			_listSelectionStyle = new GUIStyle(HighLogic.Skin.button);
 			_listSelectionStyle.normal.background = _listSelectionStyle.active.background;
 			_listSelectionStyle.hover.background = _listSelectionStyle.active.background;
-			_listSelectionStyle.normal.textColor = Color.yellow;
-			_listSelectionStyle.hover.textColor = Color.yellow;
+			_listSelectionStyle.normal.textColor = myYellow;
+			_listSelectionStyle.hover.textColor = myYellow;
 
 			_txtFieldStyle = new GUIStyle(HighLogic.Skin.textField);
 			_txtFieldStyle.stretchWidth = true;
@@ -296,7 +307,7 @@ namespace KerbalImprovedSaveSystem
 
 
 		/// <summary>
-		/// Closes the KISS window and writes the specified reason into the Debug.Log.
+		/// Closes the KISS window, unpauses the game and writes the specified reason into the Debug.Log.
 		/// </summary>
 		/// <param name="reason">Why/How was the window closed?</param>
 		private void Close(string reason)
@@ -308,7 +319,6 @@ namespace KerbalImprovedSaveSystem
 
 			// code to remove window from UI
 			_isVisible = false;
-			RenderingManager.RemoveFromPostDrawQueue(0, OnDraw);
 			Debug.Log(modLogTag + reason);	
 			FlightDriver.SetPause(false);
 		}
