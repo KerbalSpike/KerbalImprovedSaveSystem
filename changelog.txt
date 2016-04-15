@@ -1,12 +1,25 @@
 KISS version history
 ====================
 
-1.0, 2016-04-08
-	Added:		Select and immediately save an existing savegame using double-click.
+1.1.0-beta1, 2016-04-15
+	Changed:	Rebuilt the GUI code to work with KSP 1.1 and Unity 5. (Fortunately everything still works with KSP 1.0.5, yay!)
+	Changed:	Adjusted the yellow textcolor to be slightly daker/more orange.
+	
+	Known Issues:
+	-	Some flickering of the window occurs when scrolling reaches the end of the list.
+		(This is possibly related to a bug that got fixed in Unity 5.3.3 but KSP is still using Unity 5.2.)
 
+
+1.0.0, 2016-04-08
+	Built for KSP 1.0.5.
+	Initial public release.
+	Added:		Select and immediately overwrite an existing savegame using double-click.
+
+	
 0.9.1, 2016-04-05
 	Changed:	Updated README file.
 	Added:		Changelog (changelog.txt).
 
-0.9, 2016-04-05
+	
+0.9.0, 2016-04-05
 	Added: 		Highlighting of currently selected savegame in list.
