@@ -63,7 +63,7 @@ namespace KerbalImprovedSaveSystem
 					//RenderingManager.AddToPostDrawQueue(0, OnDraw);
 				}
 
-				// detect double clicks //not working when paused... (no events?)
+				// detect double clicks // this is not working when paused... (no events?)
 //				if (Input.GetMouseButtonDown(0))
 //				{
 //					if (Time.time - lastClickTime < catchTime)
@@ -147,12 +147,12 @@ namespace KerbalImprovedSaveSystem
 			{
 				for (; i < existingSaveGames.Count; i++)
 				{
-					var rect = new Rect(5, 20 * i, 285, 20);
-					if (rect.yMax < _scrollPos.y || rect.yMin > _scrollPos.y + 500)
-					{
-						//do not draw items outside the current ScrollView
-						continue;
-					}
+//					var rect = new Rect(5, 20 * i, 285, 20);
+//					if (rect.yMax < _scrollPos.y || rect.yMin > _scrollPos.y + 500)
+//					{
+//						//do not draw items outside the current ScrollView
+//						continue;
+//					}
 
 					string saveGameName = existingSaveGames[i];
 					GUIStyle _renderStyle = _listBtnStyle;

@@ -8,7 +8,8 @@
     <RootNamespace>KerbalImprovedSaveSystem</RootNamespace>
     <AssemblyName>KerbalImprovedSaveSystem</AssemblyName>
     <TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
-    <Description>A Plugin for Kerbal Space Program that lets you choose from all existing savegames (filenames) so you don't have to remember a name and type it in if you want to overwrite a specific file.</Description>
+    <Description>A small plugin for Kerbal Space Program that lets you choose from all existing savesgames when quicksaving so you don't have to remember a name and type it in if you want to overwrite a specific file.</Description>
+    <ReleaseVersion>1.1.0</ReleaseVersion>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -20,26 +21,38 @@
     <WarningLevel>4</WarningLevel>
     <ConsolePause>false</ConsolePause>
   </PropertyGroup>
-  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release KSP 1.0.5|AnyCPU' ">
     <Optimize>true</Optimize>
     <OutputPath>Output\KerbalImprovedSaveSystem\Plugins</OutputPath>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
+    <CustomCommands>
+      <CustomCommands>
+        <Command type="AfterBuild" command="xcopy &quot;$(TargetDir)\*.*&quot; &quot;..\Kerbal Space Program 1.0.5\GameData\$(ProjectName)\Plugins&quot; /D /E /C /R /I /K /Y" externalConsole="True" pauseExternalConsole="True" />
+      </CustomCommands>
+    </CustomCommands>
     <ConsolePause>false</ConsolePause>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release KSP 1.1|AnyCPU' ">
+    <Optimize>true</Optimize>
+    <OutputPath>Output\KerbalImprovedSaveSystem\Plugins</OutputPath>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
     <CustomCommands>
       <CustomCommands>
         <Command type="AfterBuild" command="xcopy &quot;$(TargetDir)\*.*&quot; &quot;..\Kerbal Space Program 1.1\GameData\$(ProjectName)\Plugins&quot; /D /E /C /R /I /K /Y" externalConsole="True" pauseExternalConsole="True" />
       </CustomCommands>
     </CustomCommands>
+    <ConsolePause>false</ConsolePause>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="System" />
     <Reference Include="UnityEngine">
-      <HintPath>..\Kerbal Space Program 1.1\KSP_Data\Managed\UnityEngine.dll</HintPath>
+      <HintPath>..\Kerbal Space Program 1.0.5\KSP_Data\Managed\UnityEngine.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="Assembly-CSharp">
-      <HintPath>..\Kerbal Space Program 1.1\KSP_Data\Managed\Assembly-CSharp.dll</HintPath>
+      <HintPath>..\Kerbal Space Program 1.0.5\KSP_Data\Managed\Assembly-CSharp.dll</HintPath>
       <Private>False</Private>
     </Reference>
   </ItemGroup>
