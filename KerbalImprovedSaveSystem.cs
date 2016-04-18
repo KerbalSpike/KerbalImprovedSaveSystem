@@ -147,6 +147,7 @@ namespace KerbalImprovedSaveSystem
 			{
 				for (; i < existingSaveGames.Count; i++)
 				{
+					// code for only rendering currently visible elements in scrollView, causes flickering in KSP 1.1 / Unity 5
 //					var rect = new Rect(5, 20 * i, 285, 20);
 //					if (rect.yMax < _scrollPos.y || rect.yMin > _scrollPos.y + 500)
 //					{

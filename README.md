@@ -15,7 +15,6 @@ In other words **KISS** allows you to overwrite or create a variation of a previ
 See [changelog.txt] (https://github.com/KerbalSpike/KerbalImprovedSaveSystem/blob/develop/changelog.txt) for list of changes.
 
 #### Planned updates ("soon" :tm: ): ####
-* rebuild for KSP v1.1 and Unity 5.
 * add confirmation dialog before overwriting existing files.
 * make keyboard shortcut configurable.
 * let players choose between system time and ingame time for the timestamp.
