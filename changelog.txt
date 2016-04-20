@@ -1,13 +1,9 @@
 KISS version history
 ====================
 
-1.1.0-beta1, 2016-04-15
+1.1.0-beta1, 2016-04-20
 	Changed:	Rebuilt the GUI code to work with KSP 1.1 and Unity 5. (Fortunately everything still works with KSP 1.0.5, yay!)
-	Changed:	Adjusted the yellow textcolor to be slightly daker/more orange.
-	
-	Known Issues:
-	-	Some flickering of the window occurs when scrolling reaches the end of the list.
-		(This is possibly related to a bug that got fixed in Unity 5.3.3 but KSP is still using Unity 5.2.)
+	Changed:	Adjusted the yellow textcolor of window caption and highlighted list items to a slightly darker/more orange shade.
 
 
 1.0.0, 2016-04-08
