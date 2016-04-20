@@ -12,7 +12,7 @@ In other words **KISS** allows you to overwrite or create a variation of a previ
 
 ### Current version: 1.1.0-beta1 - (Kerbal Space Program 1.1 - also works fine with KSP 1.0.5) ###
 
-See [changelog.txt] (https://github.com/KerbalSpike/KerbalImprovedSaveSystem/blob/develop/changelog.txt) for list of changes.
+See [changelog.txt] (https://github.com/KerbalSpike/KerbalImprovedSaveSystem/blob/develop/changelog.txt) for list of changes.  
 Visit the [Development Thread] (http://forum.kerbalspaceprogram.com/index.php?/topic/136799-105-kiss-kerbal-improved-save-system-development-thread/) to tell me what you think about KISS. 
 
 #### Planned updates ("soon" :tm: ): ####
