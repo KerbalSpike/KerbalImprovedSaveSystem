@@ -300,8 +300,15 @@ namespace KerbalImprovedSaveSystem
 //				confirm.Show(selectedFileName);
 			} else
 			{
+				// first we need to acquire the current game status
+				Game currentGame = HighLogic.CurrentGame.Updated();
+				// then we have to reset the startScene to flight, because calling Updated() sets it to space center.
+				currentGame.startScene = GameScenes.FLIGHT;
+
+				// now we can save it...
+
 				SaveMode s = SaveMode.OVERWRITE; // available SaveModes are: OVERWRITE, APPEND, ABORT
-				string filename = GamePersistence.SaveGame(selectedSaveFileName, HighLogic.SaveFolder, s);
+				string filename = GamePersistence.SaveGame(currentGame, selectedSaveFileName, HighLogic.SaveFolder, s);
 				Debug.Log(modLogTag + "Game saved in '" + filename + "'");
 			}
 		}
