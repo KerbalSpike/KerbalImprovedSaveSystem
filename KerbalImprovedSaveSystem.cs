@@ -104,7 +104,7 @@ namespace KerbalImprovedSaveSystem
 
 
 		/// <summary>
-		/// Raises the GUI event.
+		/// Called by Unity to draw the GUI - can be called many times per frame.
 		/// </summary>
 		private void OnGUI()
 		{
@@ -137,6 +137,7 @@ namespace KerbalImprovedSaveSystem
 		{
 
 			GUILayout.BeginVertical();
+	
 			GUILayout.Label("Existing savegames:", _labelStyle);
 
 			_scrollPos = GUILayout.BeginScrollView(_scrollPos, _listStyle);
@@ -184,6 +185,16 @@ namespace KerbalImprovedSaveSystem
 			if (GUILayout.Button("Now + shipname", _altBtnStyle))
 			{
 				selectedFileName = DateTime.Now.ToString("yyyyMMdd_HHmmss_") + FlightGlobals.ActiveVessel.vesselName;
+			}
+			GUILayout.Space(20);
+			if (GUILayout.Button("Delete", _altBtnStyle))
+			{
+				//TODO
+			}
+			GUILayout.Space(20);
+			if (GUILayout.Button("Options", _buttonStyle))
+			{
+				//TODO
 			}
 			GUILayout.FlexibleSpace(); // moves the following buttons to the right
 			if (GUILayout.Button("Cancel", _buttonStyle))
