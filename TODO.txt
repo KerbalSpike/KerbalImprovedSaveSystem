@@ -1,0 +1,11 @@
+
+Things to implement, roughly in order of (decreasing) importance:
+=================================================================
+
+*) Store options configured on settings panel into plugin-cfg for persistence between game sessions
+*) Make the timestamp adhere to the game time option.
+*) Add option to reverse sorting of list.
+*) Add option to default filename to "quicksave" for fast quicksaving
+*) Figure out how to properly built a yes/no dialog and implement one
+**) Make Save button adhere to the confirm overwrite option
+**) Make delete button adhere to the confirm delete option
