@@ -19,8 +19,12 @@ namespace KerbalImprovedSaveSystem
 		// stuff to configure the GUI
 		private static Rect _windowPosition = new Rect();
 		private static bool _isVisible = false;
-		private GUIStyle _windowStyle, _labelStyle, _buttonStyle, _altBtnStyle, _listBtnStyle, _listSelectionStyle, _txtFieldStyle, _listStyle;
+		private GUIStyle _windowStyle, _labelStyle, _buttonStyle, _altBtnStyle, _delBtnStyle, _listBtnStyle, _listSelectionStyle, _txtFieldStyle, _listStyle;
+		private Texture2D _settingsTexture;
 		private bool _hasInitStyles = false;
+		// scroll position in the list of existing savegames
+		private Vector2 _scrollPos;
+		private bool _showSettings = false;
 
 		// stuff to detect double clicks
 		private bool dblClicked = false;
@@ -33,10 +37,11 @@ namespace KerbalImprovedSaveSystem
 		private string selectedFileName = "";
 		// list of existing savegames
 		private List<string> existingSaveGames;
-		// flag to enforce/disable overwrite confirmations
+
+		// flags to configure behaviour
+
+		// enable/disable overwrite confirmations
 		private bool confirmOverwrite = false;
-		// scroll position in the list of existing savegames
-		private Vector2 _scrollPos;
 
 
 		/// <summary>
@@ -125,7 +130,7 @@ namespace KerbalImprovedSaveSystem
 				_windowPosition = config.GetValue<Rect>("Window Position", _windowPosition.CenterScreen());
 			}
 
-			_windowPosition = GUILayout.Window(this.GetInstanceID(), _windowPosition, OnWindow, "Kerbal Improved Save System", _windowStyle);
+			_windowPosition = GUILayout.Window(this.GetInstanceID(), _windowPosition, DrawControls, "Kerbal Improved Save System", _windowStyle);
 		}
 
 
@@ -133,12 +138,24 @@ namespace KerbalImprovedSaveSystem
 		/// Handles all the GUI drawing/layout.
 		/// </summary>
 		/// <param name="windowId">Window identifier.</param>
-		private void OnWindow(int windowId)
+		private void DrawControls(int windowId)
 		{
 
 			GUILayout.BeginVertical();
 	
+			GUILayout.BeginHorizontal();
+			GUILayout.BeginVertical();
+			GUILayout.Space(4); // moves the following label down
 			GUILayout.Label("Existing savegames:", _labelStyle);
+			GUILayout.EndVertical();
+			GUILayout.FlexibleSpace(); // moves the following button to the right
+			if (GUILayout.Button(new GUIContent(_settingsTexture, "Show Options"), _buttonStyle))
+			{
+				_showSettings = !_showSettings;
+			}
+			GUILayout.EndHorizontal();
+
+			GUILayout.Space(6);
 
 			_scrollPos = GUILayout.BeginScrollView(_scrollPos, _listStyle);
 			int i = 0;
@@ -186,15 +203,13 @@ namespace KerbalImprovedSaveSystem
 			{
 				selectedFileName = DateTime.Now.ToString("yyyyMMdd_HHmmss_") + FlightGlobals.ActiveVessel.vesselName;
 			}
-			GUILayout.Space(20);
-			if (GUILayout.Button("Delete", _altBtnStyle))
+			GUILayout.Space(50);
+			if (existingSaveGames.Contains(selectedFileName))
 			{
-				//TODO
-			}
-			GUILayout.Space(20);
-			if (GUILayout.Button("Options", _buttonStyle))
-			{
-				//TODO
+				if (GUILayout.Button("Delete", _delBtnStyle))
+				{
+					//TODO
+				}
 			}
 			GUILayout.FlexibleSpace(); // moves the following buttons to the right
 			if (GUILayout.Button("Cancel", _buttonStyle))
@@ -218,7 +233,16 @@ namespace KerbalImprovedSaveSystem
 		/// </summary>
 		private void InitStyles()
 		{
+			_showSettings = false;
+
+			_settingsTexture = new Texture2D(20, 20, TextureFormat.ARGB32, false);
+			_settingsTexture = GameDatabase.Instance.GetTexture("KerbalImprovedSaveSystem/icons/settings", false);
+			//Debug.Log(modLogTag + GameDatabase.Instance.GetTextureInfo("KerbalImprovedSaveSystem/icons/settings"));
+
 			Color myYellow = HighLogic.Skin.textField.normal.textColor;
+			Color myRed = new Color(0.78f, 0f, 0f);
+			Color myOrange = new Color(1f, 0.4f, 0f);
+			
 			_windowStyle = new GUIStyle(HighLogic.Skin.window);
 			_windowStyle.fixedWidth = 400f;
 			_windowStyle.fixedHeight = 500f;
@@ -241,6 +265,10 @@ namespace KerbalImprovedSaveSystem
 			_altBtnStyle.hover.textColor = myYellow;
 			_altBtnStyle.active.textColor = myYellow;
 
+			_delBtnStyle = new GUIStyle(HighLogic.Skin.button);
+			_delBtnStyle.normal.textColor = myOrange;
+			_delBtnStyle.hover.textColor = myOrange;
+			_delBtnStyle.active.textColor = myOrange;
 			_listBtnStyle = new GUIStyle(HighLogic.Skin.button);
 			_listBtnStyle.hover.background = _listBtnStyle.normal.background;
 			_listBtnStyle.normal.background = null;
@@ -261,6 +289,8 @@ namespace KerbalImprovedSaveSystem
 			_listStyle.margin.right = 4;
 
 			_hasInitStyles = true;
+			
+			Debug.Log(modLogTag + "GUI styles initialised.");
 		}
 
 
