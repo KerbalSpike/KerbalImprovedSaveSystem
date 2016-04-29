@@ -17,9 +17,9 @@ namespace KerbalImprovedSaveSystem
 		public static string modLogTag = "[KISS]: ";
 
 		// stuff to configure the GUI
-		private static Rect _windowPosition = new Rect();
+		private static Rect _windowPosSize = new Rect(0, 0, 400, 500);
 		private static bool _isVisible = false;
-		private GUIStyle _windowStyle, _labelStyle, _buttonStyle, _altBtnStyle, _delBtnStyle, _listBtnStyle, _listSelectionStyle, _txtFieldStyle, _listStyle;
+		private GUIStyle _windowStyle, _labelStyle, _buttonStyle, _altBtnStyle, _delBtnStyle, _listBtnStyle, _listSelectionStyle, _txtFieldStyle, _listStyle, _toggleStyle;
 		private Texture2D _settingsTexture;
 		private bool _hasInitStyles = false;
 		// scroll position in the list of existing savegames
@@ -42,6 +42,10 @@ namespace KerbalImprovedSaveSystem
 
 		// enable/disable overwrite confirmations
 		private bool confirmOverwrite = false;
+		// enable/disable delete confirmations
+		private bool confirmDelete = false;
+		// timestamps in game time instead of system time
+		private bool useGameTime = false;
 
 
 		/// <summary>
@@ -119,18 +123,26 @@ namespace KerbalImprovedSaveSystem
 
 
 		/// <summary>
-		/// Raises the draw event and handles window positioning.
+		/// Handles window positioning.
 		/// </summary>
 		private void OnDraw()
 		{
-			if (_windowPosition.x == 0f && _windowPosition.y == 0f)
+			if (_windowPosSize.x == 0f && _windowPosSize.y == 0f)
 			{
 				PluginConfiguration config = PluginConfiguration.CreateForType<KerbalImprovedSaveSystem>();
 				config.load();
-				_windowPosition = config.GetValue<Rect>("Window Position", _windowPosition.CenterScreen());
+				_windowPosSize = config.GetValue<Rect>("Window Position", _windowPosSize.CenterScreen());
 			}
 
-			_windowPosition = GUILayout.Window(this.GetInstanceID(), _windowPosition, DrawControls, "Kerbal Improved Save System", _windowStyle);
+			if (_showSettings)
+			{
+				_windowPosSize.width = 650;
+			} else
+			{
+				_windowPosSize.width = 400;
+			}
+
+			_windowPosSize = GUILayout.Window(this.GetInstanceID(), _windowPosSize, DrawControls, "Kerbal Improved Save System", _windowStyle);
 		}
 
 
@@ -141,11 +153,13 @@ namespace KerbalImprovedSaveSystem
 		private void DrawControls(int windowId)
 		{
 
-			GUILayout.BeginVertical();
+			GUILayout.BeginHorizontal(); // outer container. left: KISS dialog, right: settings panel
+
+			GUILayout.BeginVertical(GUILayout.Width(388), GUILayout.ExpandHeight(true)); // contains content of main KISS dialog, without settings panel
 	
 			GUILayout.BeginHorizontal();
 			GUILayout.BeginVertical();
-			GUILayout.Space(4); // moves the following label down
+			GUILayout.Space(10); // moves the following label down
 			GUILayout.Label("Existing savegames:", _labelStyle);
 			GUILayout.EndVertical();
 			GUILayout.FlexibleSpace(); // moves the following button to the right
@@ -222,7 +236,19 @@ namespace KerbalImprovedSaveSystem
 				Close("SaveDialog completed.");
 			}
 			GUILayout.EndHorizontal();
-			GUILayout.EndVertical();
+			
+			GUILayout.EndVertical(); // end of main KISS dialog
+
+			if (_showSettings)
+			{
+				GUILayout.BeginVertical();
+				confirmOverwrite = GUILayout.Toggle(confirmOverwrite, new GUIContent("Confirm before overwriting", "Require confirmation before overwriting existing savegames."), _toggleStyle);
+				confirmDelete = GUILayout.Toggle(confirmDelete, new GUIContent("Confirm before deleting", "Require confirmation before deleting existing savegames."), _toggleStyle);
+				useGameTime = GUILayout.Toggle(useGameTime, new GUIContent("Use game time", "If enabled, timestamps created by KISS use the ingame time instead of your system time."), _toggleStyle);
+				GUILayout.EndVertical();
+			}
+
+			GUILayout.EndHorizontal(); // end of KISS window incl. settings
 
 			GUI.DragWindow();
 		}
@@ -244,8 +270,8 @@ namespace KerbalImprovedSaveSystem
 			Color myOrange = new Color(1f, 0.4f, 0f);
 			
 			_windowStyle = new GUIStyle(HighLogic.Skin.window);
-			_windowStyle.fixedWidth = 400f;
-			_windowStyle.fixedHeight = 500f;
+			//_windowStyle.fixedWidth = 400f;
+			//_windowStyle.fixedHeight = 500f;
 			_windowStyle.normal.textColor = myYellow; //Color.yellow;
 			_windowStyle.onNormal.textColor = myYellow;
 			_windowStyle.hover.textColor = myYellow;
@@ -269,6 +295,7 @@ namespace KerbalImprovedSaveSystem
 			_delBtnStyle.normal.textColor = myOrange;
 			_delBtnStyle.hover.textColor = myOrange;
 			_delBtnStyle.active.textColor = myOrange;
+			
 			_listBtnStyle = new GUIStyle(HighLogic.Skin.button);
 			_listBtnStyle.hover.background = _listBtnStyle.normal.background;
 			_listBtnStyle.normal.background = null;
@@ -288,6 +315,9 @@ namespace KerbalImprovedSaveSystem
 			_listStyle.margin.left = 4;
 			_listStyle.margin.right = 4;
 
+			_toggleStyle = new GUIStyle(HighLogic.Skin.toggle);
+			_toggleStyle.stretchWidth = true;
+			
 			_hasInitStyles = true;
 			
 			Debug.Log(modLogTag + "GUI styles initialised.");
@@ -363,7 +393,7 @@ namespace KerbalImprovedSaveSystem
 		{
 			// save window position into config file
 			PluginConfiguration config = PluginConfiguration.CreateForType<KerbalImprovedSaveSystem>();
-			config.SetValue("Window Position", _windowPosition);
+			config.SetValue("Window Position", _windowPosSize);
 			config.save();
 
 			// code to remove window from UI
