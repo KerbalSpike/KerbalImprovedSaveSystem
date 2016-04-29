@@ -108,6 +108,16 @@ namespace KerbalImprovedSaveSystem
 				{
 					Close("SaveDialog aborted by user.");
 				}
+
+				// allow saving using with currently selected name without moving mouse
+				if (Input.GetKey(KeyCode.Return) || Input.GetKey(KeyCode.KeypadEnter))
+				{
+					if (selectedFileName != "")
+					{
+						Save(selectedFileName);
+						Close("SaveDialog completed.");
+					}
+				}
 			}
 		}
 
