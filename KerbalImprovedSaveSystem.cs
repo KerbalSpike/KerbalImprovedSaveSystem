@@ -44,7 +44,7 @@ namespace KerbalImprovedSaveSystem
 		/// </summary>
 		void Update()
 		{
-			if (!_isVisible)
+            if (!_isVisible)
 			{
 				// show window on F8
 				if (Input.GetKey(KeyCode.F8)) //GameSettings.QUICKSAVE.GetKey() && GameSettings.MODIFIER_KEY.GetKey())
