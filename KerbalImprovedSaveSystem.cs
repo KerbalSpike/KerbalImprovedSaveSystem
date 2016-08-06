@@ -46,6 +46,8 @@ namespace KerbalImprovedSaveSystem
 		private bool confirmDelete = false;
 		// timestamps in game time instead of system time
 		private bool useGameTime = false;
+        // reverse sorting of savegames (newest first of only using saves with timestamps)
+        private bool listInverted = false;
 
 
 		/// <summary>
@@ -109,8 +111,8 @@ namespace KerbalImprovedSaveSystem
 					Close("SaveDialog aborted by user.");
 				}
 
-				// allow saving using with currently selected name without moving mouse
-				if (Input.GetKey(KeyCode.Return) || Input.GetKey(KeyCode.KeypadEnter))
+                // allow saving with currently selected name without moving mouse using Return/Enter
+                if (Input.GetKey(KeyCode.Return) || Input.GetKey(KeyCode.KeypadEnter))
 				{
 					if (selectedFileName != "")
 					{
@@ -189,7 +191,8 @@ namespace KerbalImprovedSaveSystem
 			{
 				for (; i < existingSaveGames.Count; i++)
 				{
-					// code for only rendering currently visible elements in scrollView, causes flickering in KSP 1.1 / Unity 5
+                    // code for only rendering currently visible elements in scrollView, 
+                    // disabled because it causes flickering in KSP 1.1 / Unity 5
 //					var rect = new Rect(5, 20 * i, 285, 20);
 //					if (rect.yMax < _scrollPos.y || rect.yMin > _scrollPos.y + 500)
 //					{
@@ -255,7 +258,9 @@ namespace KerbalImprovedSaveSystem
 				confirmOverwrite = GUILayout.Toggle(confirmOverwrite, new GUIContent("Confirm before overwriting", "Require confirmation before overwriting existing savegames."), _toggleStyle);
 				confirmDelete = GUILayout.Toggle(confirmDelete, new GUIContent("Confirm before deleting", "Require confirmation before deleting existing savegames."), _toggleStyle);
 				useGameTime = GUILayout.Toggle(useGameTime, new GUIContent("Use game time", "If enabled, timestamps created by KISS use the ingame time instead of your system time."), _toggleStyle);
-				GUILayout.EndVertical();
+                listInverted = GUILayout.Toggle(listInverted, new GUIContent("Reverse list", "If enabled, the list of savegames is shown in reverse order."), _toggleStyle);
+
+                GUILayout.EndVertical();
 			}
 
 			GUILayout.EndHorizontal(); // end of KISS window incl. settings

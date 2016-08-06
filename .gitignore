@@ -15,3 +15,7 @@
 [Bb]in/
 [Oo]bj/
 [Ll]og/
+
+# Visual Studio/Unity debug information
+*.mdb
+*.pdb
