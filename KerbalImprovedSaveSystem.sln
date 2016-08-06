@@ -1,6 +1,8 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 2012
+# Visual Studio 14
+VisualStudioVersion = 14.0.25123.0
+MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "KerbalImprovedSaveSystem", "KerbalImprovedSaveSystem.csproj", "{DF2B9265-3296-4640-81FB-7FA24B782292}"
 EndProject
 Global
@@ -16,6 +18,9 @@ Global
 		{DF2B9265-3296-4640-81FB-7FA24B782292}.Release KSP 1.0.5|Any CPU.Build.0 = Release KSP 1.0.5|Any CPU
 		{DF2B9265-3296-4640-81FB-7FA24B782292}.Release KSP 1.1|Any CPU.ActiveCfg = Release KSP 1.1|Any CPU
 		{DF2B9265-3296-4640-81FB-7FA24B782292}.Release KSP 1.1|Any CPU.Build.0 = Release KSP 1.1|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
 	EndGlobalSection
 	GlobalSection(MonoDevelopProperties) = preSolution
 		Policies = $0
