@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 <Project DefaultTargets="Build" ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
@@ -10,12 +10,13 @@
     <TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
     <Description>A small plugin for Kerbal Space Program that lets you choose from all existing savesgames when quicksaving so you don't have to remember a name and type it in if you want to overwrite a specific file.</Description>
     <ReleaseVersion>1.1.0</ReleaseVersion>
+    <UseMSBuildEngine>false</UseMSBuildEngine>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
     <DebugType>full</DebugType>
     <Optimize>false</Optimize>
-    <OutputPath>bin\Debug</OutputPath>
+    <OutputPath>Output\KerbalImprovedSaveSystem\Plugins</OutputPath>
     <DefineConstants>DEBUG;</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
@@ -23,36 +24,26 @@
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release KSP 1.0.5|AnyCPU' ">
     <Optimize>true</Optimize>
-    <OutputPath>Output\KerbalImprovedSaveSystem</OutputPath>
+    <OutputPath>Output\KerbalImprovedSaveSystem\Plugins</OutputPath>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
-    <CustomCommands>
-      <CustomCommands>
-        <Command type="AfterBuild" command="xcopy &quot;$(TargetDir)\*.*&quot; &quot;..\Kerbal Space Program 1.0.5\GameData\$(ProjectName)&quot; /D /E /C /R /I /K /Y" externalConsole="True" pauseExternalConsole="True" />
-      </CustomCommands>
-    </CustomCommands>
     <ConsolePause>false</ConsolePause>
   </PropertyGroup>
-  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release KSP 1.1|AnyCPU' ">
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release KSP 1.1.3|AnyCPU' ">
     <Optimize>true</Optimize>
-    <OutputPath>Output\KerbalImprovedSaveSystem</OutputPath>
+    <OutputPath>Output\KerbalImprovedSaveSystem\Plugins</OutputPath>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
-    <CustomCommands>
-      <CustomCommands>
-        <Command type="AfterBuild" command="xcopy &quot;$(TargetDir)\*.*&quot; &quot;..\Kerbal Space Program 1.1\GameData\$(ProjectName)&quot; /D /E /C /R /I /K /Y" externalConsole="True" pauseExternalConsole="True" />
-      </CustomCommands>
-    </CustomCommands>
     <ConsolePause>false</ConsolePause>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="System" />
-    <Reference Include="UnityEngine">
-      <HintPath>..\Kerbal Space Program 1.1\KSP_Data\Managed\UnityEngine.dll</HintPath>
+    <Reference Include="Assembly-CSharp">
+      <HintPath>..\Kerbal Space Program 1.1.3\KSP_Data\Managed\Assembly-CSharp.dll</HintPath>
       <Private>False</Private>
     </Reference>
-    <Reference Include="Assembly-CSharp">
-      <HintPath>..\Kerbal Space Program 1.1\KSP_Data\Managed\Assembly-CSharp.dll</HintPath>
+    <Reference Include="UnityEngine">
+      <HintPath>..\Kerbal Space Program 1.1.3\KSP_Data\Managed\UnityEngine.dll</HintPath>
       <Private>False</Private>
     </Reference>
   </ItemGroup>
@@ -63,17 +54,19 @@
     <Compile Include="KISSDialog.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
-  <ItemGroup>
-    <Folder Include="Extensions\" />
-  </ItemGroup>
+  <ItemGroup />
   <ProjectExtensions>
     <MonoDevelop>
       <Properties>
         <Policies>
           <TextStylePolicy inheritsSet="null" scope="text/x-csharp" />
-          <CSharpFormattingPolicy StatementBraceStyle="NextLine" BeforeMethodDeclarationParentheses="False" BeforeMethodCallParentheses="False" BeforeConstructorDeclarationParentheses="False" BeforeIndexerDeclarationBracket="False" BeforeDelegateDeclarationParentheses="False" AfterDelegateDeclarationParameterComma="True" NewParentheses="False" SpacesBeforeBrackets="False" inheritsSet="Mono" inheritsScope="text/x-csharp" scope="text/x-csharp" />
+          <CSharpFormattingPolicy inheritsSet="Mono" inheritsScope="text/x-csharp" scope="text/x-csharp" />
         </Policies>
       </Properties>
     </MonoDevelop>
   </ProjectExtensions>
+  <PropertyGroup>
+    <PostBuildEvent>"D:\Projects\KSP_mods\Tools\pdb2mdb\pdb2mdb.exe" "$(TargetFileName)"
+xcopy "$(TargetDir)*.*" "D:\Projects\KSP_mods\Kerbal Space Program 1.1.3\GameData\$(ProjectName)\Plugins" /D /E /C /R /I /K /Y</PostBuildEvent>
+  </PropertyGroup>
 </Project>
