@@ -2,11 +2,7 @@
 Things to implement, roughly in order of (decreasing) importance:
 =================================================================
 
-*) Store options configured on settings panel into plugin-cfg for persistence between game sessions
 *) Make the timestamp adhere to the game time option.
-*) Add option to reverse sorting of list.
-**) Sort list according to reverse sorting option.
-*) Add option to default filename to "quicksave" for fast quicksaving
 *) Figure out how to properly built a yes/no dialog and implement one
 **) Make Save button adhere to the confirm overwrite option
 **) Make delete button adhere to the confirm delete option
@@ -15,3 +11,13 @@ Things to implement, roughly in order of (decreasing) importance:
 Known bugs:
 -----------
 *) if a savegame gets selected whichs name is longer than the current cursor position in the textbox, the cursor position is not updated to the last position of the text.
+
+
+
+
+finished stuff:
+***************
+*) Add option to reverse sorting of list.
+**) Sort list according to reverse sorting option.
+*) Store options configured on settings panel into plugin-cfg for persistence between game sessions
+*) Add option to default filename to "quicksave" for fast quicksaving
