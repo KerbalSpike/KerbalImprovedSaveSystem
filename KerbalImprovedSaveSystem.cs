@@ -10,16 +10,18 @@ namespace KerbalImprovedSaveSystem
 	/// <summary>
 	/// Start Kerbal Improved Save System when in a flight scene.
 	/// </summary>
-	[KSPAddon(KSPAddon.Startup.Flight, false)] 
+	[KSPAddon(KSPAddon.Startup.Flight, false)]
 	public class KerbalImprovedSaveSystem : MonoBehaviour
 	{
 		// used to identify log entries of this plugin
 		public const string modLogTag = "[KISS]: ";
 
 		// stuff to configure the GUI
-		private Rect _windowPosSize = new Rect(0, 0, 400, 500);
+		private Rect _windowPosSize;
 		private bool _isVisible = false;
-		private GUIStyle _windowStyle, _labelStyle, _buttonStyle, _altBtnStyle, _delBtnStyle, _listBtnStyle, _listSelectionStyle, _txtFieldStyle, _listStyle, _toggleStyle;
+		private KISSDialog _kissDialog = new KISSDialog();
+		private string _kissTooltip = "";
+		private GUIStyle _windowStyle, _labelStyle, _buttonStyle, _altBtnStyle, _delBtnStyle, _listBtnStyle, _listSelectionStyle, _txtFieldStyle, _listStyle, _toggleStyle, _selectionGridSytle, _tooltipWindowStyle, _tooltipLblStyle;
 		private Texture2D _settingsTexture;
 		private bool _hasInitStyles = false;
 		// scroll position in the list of existing savegames
@@ -38,39 +40,42 @@ namespace KerbalImprovedSaveSystem
 		// list of existing savegames
 		private List<string> existingSaveGames;
 
-        //reference to the plugin configuration
-        private PluginConfiguration config;
+		//reference to the plugin configuration
+		private PluginConfiguration config;
 
-        // stuff for controlling the suggested name for the savegame when opening KISS
-        private string[] dfltSaveNames = new string[] { "{Time}_{ActiveVessel}", "{ActiveVessel}_{Time}", "{quicksave}" };
-        private int selectedDfltSaveNameInt = 0;
-        
-        // flags to configure behaviour
+		// stuff for controlling the suggested name for the savegame when opening KISS
+		private string[] dfltSaveNames = new string[] { "{Time}_{ActiveVessel}", "{ActiveVessel}_{Time}", "quicksave" };
+		private int selectedDfltSaveNameInt = 0;
 
-        // enable/disable overwrite confirmations
-        private bool confirmOverwrite = false;
+		// flags to configure behaviour
+
+		// enable/disable overwrite confirmations
+		private bool confirmOverwrite = false;
 		// enable/disable delete confirmations
 		private bool confirmDelete = false;
 		// timestamps in game time instead of system time
 		private bool useGameTime = false;
-        // reverse sorting of savegames (newest first of only using saves with timestamps)
-        private bool reverseOrder = false;
+		// reverse sorting of savegames (newest first of only using saves with timestamps)
+		private bool reverseOrder = false;
 
 
 
-        /// <summary>
-        /// Handles initialization of the plugin
-        /// </summary>
-        void Start()
-        {
-            config = PluginConfiguration.CreateForType<KerbalImprovedSaveSystem>();
-            config.load();
-            confirmOverwrite = config.GetValue<bool>("confirmOverwrite", false);
-            confirmDelete = config.GetValue<bool>("confirmDelete", false);
-            useGameTime = config.GetValue<bool>("useGameTime", false);
-            reverseOrder = config.GetValue<bool>("reverseOrder", false);
-            selectedDfltSaveNameInt = config.GetValue<int>("selectedDfltSaveNameInt", 0);
-        }
+		/// <summary>
+		/// Handles initialization of the plugin
+		/// </summary>
+		void Start()
+		{
+			InitSettings();
+
+			config = PluginConfiguration.CreateForType<KerbalImprovedSaveSystem>();
+			config.load();
+
+			confirmOverwrite = config.GetValue<bool>("confirmOverwrite", false);
+			confirmDelete = config.GetValue<bool>("confirmDelete", false);
+			useGameTime = config.GetValue<bool>("useGameTime", false);
+			reverseOrder = config.GetValue<bool>("reverseOrder", false);
+			selectedDfltSaveNameInt = config.GetValue<int>("selectedDfltSaveNameInt", 0);
+		}
 
 
 		/// <summary>
@@ -78,7 +83,7 @@ namespace KerbalImprovedSaveSystem
 		/// </summary>
 		void Update()
 		{
-            if (!_isVisible)
+			if (!_isVisible)
 			{
 				// show window on F8
 				if (Input.GetKey(KeyCode.F8)) //GameSettings.QUICKSAVE.GetKey() && GameSettings.MODIFIER_KEY.GetKey())
@@ -88,15 +93,16 @@ namespace KerbalImprovedSaveSystem
 						Debug.Log(modLogTag + "Init GUI.");
 						InitStyles();
 					}
-						
+
 					FlightDriver.SetPause(true);
 					saveGameDir = KSPUtil.ApplicationRootPath + "saves/" + HighLogic.SaveFolder + "/";
 					existingSaveGames = getExistingSaves(saveGameDir);
-                    selectedFileName = getDfltFileName();
+					selectedFileName = getDfltFileName();
 					_isVisible = true;
 				}
 
-			} else // if visible...
+			}
+			else // if visible...
 			{
 				// detect double clicks
 				if (Input.GetMouseButtonDown(0))
@@ -104,7 +110,8 @@ namespace KerbalImprovedSaveSystem
 					if (DateTime.Now - lastClickTime < catchTime)
 					{
 						dblClicked = true;
-					} else
+					}
+					else
 					{
 						//normal click
 						dblClicked = false;
@@ -118,8 +125,8 @@ namespace KerbalImprovedSaveSystem
 					Close("SaveDialog aborted by user.");
 				}
 
-                // allow saving with currently selected name without moving mouse using Return/Enter
-                if (Input.GetKey(KeyCode.Return) || Input.GetKey(KeyCode.KeypadEnter))
+				// allow saving with currently selected name without moving mouse using Return/Enter
+				if (Input.GetKey(KeyCode.Return) || Input.GetKey(KeyCode.KeypadEnter))
 				{
 					if (selectedFileName != "")
 					{
@@ -142,7 +149,7 @@ namespace KerbalImprovedSaveSystem
 
 
 		/// <summary>
-		/// Handles window positioning.
+		/// Handles window positioning and tooltip overlay.
 		/// </summary>
 		private void OnDraw()
 		{
@@ -154,12 +161,25 @@ namespace KerbalImprovedSaveSystem
 			if (_showSettings)
 			{
 				_windowPosSize.width = 650;
-			} else
+			}
+			else
 			{
 				_windowPosSize.width = 400;
 			}
 
 			_windowPosSize = GUILayout.Window(this.GetInstanceID(), _windowPosSize, DrawControls, "Kerbal Improved Save System", _windowStyle);
+
+			if (!string.IsNullOrEmpty(_kissTooltip))
+			{
+				// This code is borrowed from "[x] Science!" Mod:
+				// calculate required height of the label for the given text and width
+				float boxHeight = _tooltipLblStyle.CalcHeight(new GUIContent(_kissTooltip), 190);
+				// create window and declare window function inside arguments of constructor
+				GUI.Window(1, new Rect(Mouse.screenPos.x + 15, Mouse.screenPos.y + 15, 194, boxHeight + 4), x =>
+				{
+					GUI.Label(new Rect(2, 2, 190, boxHeight), _kissTooltip, _tooltipLblStyle);
+				}, string.Empty, _tooltipWindowStyle);
+			}
 		}
 
 
@@ -170,17 +190,17 @@ namespace KerbalImprovedSaveSystem
 		private void DrawControls(int windowId)
 		{
 
-			GUILayout.BeginHorizontal(); // outer container. left: KISS dialog, right: settings panel
+			GUILayout.BeginHorizontal(); // outer container. left: KISS panel, right: settings panel
 
-			GUILayout.BeginVertical(GUILayout.Width(388), GUILayout.ExpandHeight(true)); // contains content of main KISS dialog, without settings panel
-	
+			GUILayout.BeginVertical(GUILayout.Width(388), GUILayout.ExpandHeight(true)); // contains content of main KISS window, without settings panel
+
 			GUILayout.BeginHorizontal(); // area above file list
-            GUILayout.BeginVertical();
+			GUILayout.BeginVertical();
 			GUILayout.Space(10); // moves the following label down
 			GUILayout.Label("Existing savegames:", _labelStyle);
 			GUILayout.EndVertical();
 			GUILayout.FlexibleSpace(); // moves the following button to the right
-			if (GUILayout.Button(new GUIContent(_settingsTexture, "Show Options"), _buttonStyle))
+			if (GUILayout.Button(new GUIContent(_settingsTexture, "Toggle Options"), _buttonStyle))
 			{
 				_showSettings = !_showSettings;
 			}
@@ -196,20 +216,20 @@ namespace KerbalImprovedSaveSystem
 			{
 				for (; i < existingSaveGames.Count; i++)
 				{
-                    // code for only rendering currently visible elements in scrollView, 
-                    // disabled because it causes flickering in KSP 1.1 / Unity 5
-                    //					var rect = new Rect(5, 20 * i, 285, 20);
-                    //					if (rect.yMax < _scrollPos.y || rect.yMin > _scrollPos.y + 500)
-                    //					{
-                    //						//do not draw items outside the current ScrollView
-                    //						continue;
-                    //					}
+					// code for only rendering currently visible elements in scrollView, 
+					// disabled because it causes flickering in KSP 1.1 / Unity 5
+					//					var rect = new Rect(5, 20 * i, 285, 20);
+					//					if (rect.yMax < _scrollPos.y || rect.yMin > _scrollPos.y + 500)
+					//					{
+					//						//do not draw items outside the current ScrollView
+					//						continue;
+					//					}
 
-                    string saveGameName;
-                    if (reverseOrder)
-                        saveGameName = existingSaveGames[existingSaveGames.Count - 1 - i];
-                    else
-                        saveGameName = existingSaveGames[i];
+					string saveGameName;
+					if (reverseOrder)
+						saveGameName = existingSaveGames[existingSaveGames.Count - 1 - i];
+					else
+						saveGameName = existingSaveGames[i];
 
 					GUIStyle _renderStyle = _listBtnStyle;
 					if (saveGameName == selectedFileName)
@@ -236,9 +256,9 @@ namespace KerbalImprovedSaveSystem
 			selectedFileName = GUILayout.TextField(selectedFileName, _txtFieldStyle);
 
 			GUILayout.BeginHorizontal();
-			if (GUILayout.Button("Restore default filename", _altBtnStyle))
+			if (GUILayout.Button(new GUIContent("Use Default", "Use the suggested default filename for the quicksave."), _altBtnStyle))
 			{
-                selectedFileName = getDfltFileName();
+				selectedFileName = getDfltFileName();
 			}
 			GUILayout.Space(50);
 			if (existingSaveGames.Contains(selectedFileName))
@@ -246,6 +266,7 @@ namespace KerbalImprovedSaveSystem
 				if (GUILayout.Button("Delete", _delBtnStyle))
 				{
 					//TODO
+					_kissDialog.ConfirmDelete(selectedFileName);
 				}
 			}
 			GUILayout.FlexibleSpace(); // moves the following buttons to the right
@@ -259,44 +280,50 @@ namespace KerbalImprovedSaveSystem
 				Close("SaveDialog completed.");
 			}
 			GUILayout.EndHorizontal();
-			
+
 			GUILayout.EndVertical(); // end of main KISS dialog
 
 			if (_showSettings)
 			{
 				GUILayout.BeginVertical(); // start of settings pane
-                GUILayout.Space(10); // moves the following label down
-                GUILayout.Label("Settings:", _labelStyle);
+				GUILayout.Space(10); // moves the following label down
+				GUILayout.Label("General Settings:", _labelStyle);
 
-                confirmOverwrite = GUILayout.Toggle(confirmOverwrite, new GUIContent("Confirm before overwriting", "Require confirmation before overwriting existing savegames."), _toggleStyle);
-				confirmDelete = GUILayout.Toggle(confirmDelete, new GUIContent("Confirm before deleting", "Require confirmation before deleting existing savegames."), _toggleStyle);
+				confirmOverwrite = GUILayout.Toggle(confirmOverwrite, new GUIContent("Confirm before overwriting", "Enable to require confirmation before overwriting existing savegames."), _toggleStyle);
+				confirmDelete = GUILayout.Toggle(confirmDelete, new GUIContent("Confirm before deleting", "Enable to require confirmation before deleting existing savegames."), _toggleStyle);
 				useGameTime = GUILayout.Toggle(useGameTime, new GUIContent("Use game time", "If enabled, timestamps created by KISS use the ingame time instead of your system time."), _toggleStyle);
-                reverseOrder = GUILayout.Toggle(reverseOrder, new GUIContent("Reverse list", "If enabled, the list of savegames is shown in reverse order."), _toggleStyle);
+				reverseOrder = GUILayout.Toggle(reverseOrder, new GUIContent("Reverse list", "If enabled, the list of savegames is shown in reverse order."), _toggleStyle);
 
-                GUILayout.BeginVertical(); // selection of default filename suggestion
-                selectedDfltSaveNameInt = GUILayout.SelectionGrid(selectedDfltSaveNameInt, dfltSaveNames, 1);
-                GUILayout.EndVertical();
+				GUILayout.Label("Default filename:", _labelStyle);
+				selectedDfltSaveNameInt = GUILayout.SelectionGrid(selectedDfltSaveNameInt, dfltSaveNames, 1, _selectionGridSytle, GUILayout.ExpandWidth(true));
 
-                GUILayout.EndVertical(); // end of settings pane
+				GUILayout.EndVertical(); // end of settings pane
 			}
 
 			GUILayout.EndHorizontal(); // end of KISS window incl. settings
 
-            //TODO Tooltip
-            // mousePos = Event.current.mousePosition;
-            //  GUI.Label (Rect (mousePos.x, mousePos.y - 100, 100, 20), GUI.tooltip);
-            GUI.DragWindow();
+			GUI.DragWindow();
+
+			_kissTooltip = GUI.tooltip;
+			// This code (and comment) is borrowed from "[x] Science!" Mod:
+			// If this window gets focus, it pushes the tooltip behind the window, which looks weird.
+			// Just hide the tooltip while mouse buttons are held down to avoid this.
+			if (Input.GetMouseButton(0) || Input.GetMouseButton(1) || Input.GetMouseButton(2))
+			{
+				_kissTooltip = string.Empty;
+			}
 		}
 
-        
-        /// <summary>
-        /// Loads stored configuration from file (or initializes default values)
-        /// </summary>
-        private void InitSettings()
-        {
-            _showSettings = false;
 
-        }
+		/// <summary>
+		/// Loads stored configuration from file (or initializes default values)
+		/// </summary>
+		private void InitSettings()
+		{
+			_windowPosSize = new Rect(0, 0, 400, 500);
+			_showSettings = false;
+
+		}
 
 
 		/// <summary>
@@ -310,7 +337,7 @@ namespace KerbalImprovedSaveSystem
 			Color myYellow = HighLogic.Skin.textField.normal.textColor;
 			Color myRed = new Color(0.78f, 0f, 0f);
 			Color myOrange = new Color(1f, 0.4f, 0f);
-			
+
 			_windowStyle = new GUIStyle(HighLogic.Skin.window);
 			_windowStyle.normal.textColor = myYellow;
 			_windowStyle.onNormal.textColor = myYellow;
@@ -335,7 +362,7 @@ namespace KerbalImprovedSaveSystem
 			_delBtnStyle.normal.textColor = myOrange;
 			_delBtnStyle.hover.textColor = myOrange;
 			_delBtnStyle.active.textColor = myOrange;
-			
+
 			_listBtnStyle = new GUIStyle(HighLogic.Skin.button);
 			_listBtnStyle.hover.background = _listBtnStyle.normal.background;
 			_listBtnStyle.normal.background = null;
@@ -357,9 +384,20 @@ namespace KerbalImprovedSaveSystem
 
 			_toggleStyle = new GUIStyle(HighLogic.Skin.toggle);
 			_toggleStyle.stretchWidth = true;
-			
+
+			_selectionGridSytle = new GUIStyle(HighLogic.Skin.toggle);
+			_selectionGridSytle.stretchWidth = true;
+
+			_tooltipWindowStyle = new GUIStyle(HighLogic.Skin.window);
+
+			_tooltipLblStyle = new GUIStyle(HighLogic.Skin.box);
+			_tooltipLblStyle.normal.background = _txtFieldStyle.normal.background;
+			_tooltipLblStyle.wordWrap = true;
+			_tooltipLblStyle.stretchHeight = true;
+			_tooltipLblStyle.padding = new RectOffset(2, 2, 2, 2);
+
 			_hasInitStyles = true;
-			
+
 			Debug.Log(modLogTag + "GUI styles initialised.");
 		}
 
@@ -384,7 +422,7 @@ namespace KerbalImprovedSaveSystem
 				foreach (string sav in saves)
 				{
 					// ignore "persistent.sfs" because that is special in KSP
-					// (and will be overwritten every time a savegame is loaded anyway)
+					// (it will be overwritten every time a savegame is loaded anyway)
 					if (!sav.Equals(saveDir + "persistent.sfs"))
 					{
 						// remove path and ".sfs" from filenames and add them to list
@@ -398,36 +436,36 @@ namespace KerbalImprovedSaveSystem
 		}
 
 
-        /// <summary>
-        /// Returns the default filename for the savegame according to the current settings
-        /// </summary>
-        /// <returns></returns>
-        private string getDfltFileName()
-        {
-            string result = dfltSaveNames[selectedDfltSaveNameInt];
-            result = result.Replace("{quicksave}", "quicksave");
-            if (useGameTime)
-                result = result.Replace("{Time}", DateTime.Now.ToString("yyyyMMdd_HHmmss"));
-            else
-                result = result.Replace("{Time}", DateTime.Now.ToString("yyyyMMdd_HHmmss"));
-            result = result.Replace("{ActiveVessel}", FlightGlobals.ActiveVessel.vesselName);
+		/// <summary>
+		/// Returns the default filename for the savegame according to the current settings
+		/// </summary>
+		/// <returns></returns>
+		private string getDfltFileName()
+		{
+			string result = dfltSaveNames[selectedDfltSaveNameInt];
+			if (useGameTime)
+				//TODO use planetarum universal time
+				result = result.Replace("{Time}", DateTime.Now.ToString("yyyyMMdd_HHmmss"));
+			else
+				result = result.Replace("{Time}", DateTime.Now.ToString("yyyyMMdd_HHmmss"));
+			result = result.Replace("{ActiveVessel}", FlightGlobals.ActiveVessel.vesselName);
 
-            return result;
-        }
+			return result;
+		}
 
 
-        /// <summary>
-        /// Save the current game progress/status into the specified filename.
-        /// </summary>
-        /// <param name="selectedSaveFileName">File name to save the game into.</param>
-        private void Save(string selectedSaveFileName)
+		/// <summary>
+		/// Save the current game progress/status into the specified filename.
+		/// </summary>
+		/// <param name="selectedSaveFileName">File name to save the game into.</param>
+		private void Save(string selectedSaveFileName)
 		{
 			if (confirmOverwrite && existingSaveGames.Contains(selectedFileName))
 			{
 				// TODO dialog asking for confirmation before overwriting file
-//				KISSDialog confirm = new KISSDialog();
-//				confirm.Show(selectedFileName);
-			} else
+				_kissDialog.ConfirmOverwrite(selectedFileName);
+			}
+			else
 			{
 				// first we need to acquire the current game status
 				Game currentGame = HighLogic.CurrentGame.Updated();
@@ -451,17 +489,17 @@ namespace KerbalImprovedSaveSystem
 		{
 			// save window position and current settings into config file
 			config.SetValue("Window Position", _windowPosSize);
-            config.SetValue("confirmOverwrite", confirmOverwrite);
-            config.SetValue("confirmDelete", confirmDelete);
-            config.SetValue("useGameTime", useGameTime);
-            config.SetValue("reverseOrder", reverseOrder);
-            config.SetValue("selectedDfltSaveNameInt", selectedDfltSaveNameInt);
-            
-            config.save();
+			config.SetValue("confirmOverwrite", confirmOverwrite);
+			config.SetValue("confirmDelete", confirmDelete);
+			config.SetValue("useGameTime", useGameTime);
+			config.SetValue("reverseOrder", reverseOrder);
+			config.SetValue("selectedDfltSaveNameInt", selectedDfltSaveNameInt);
+
+			config.save();
 
 			// code to remove window from UI
 			_isVisible = false;
-			Debug.Log(modLogTag + reason);	
+			Debug.Log(modLogTag + reason);
 			FlightDriver.SetPause(false);
 		}
 	}

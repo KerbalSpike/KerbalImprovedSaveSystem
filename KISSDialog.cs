@@ -6,19 +6,36 @@ namespace KerbalImprovedSaveSystem
 	public class KISSDialog : MonoBehaviour
 	{
 		// 200x300 px window will apear in the center of the screen.
-		private Rect windowRect = new Rect ((Screen.width - 200)/2, (Screen.height - 300)/2, 200, 300);
+		private Rect windowRect = new Rect((Screen.width - 200) / 2, (Screen.height - 300) / 2, 200, 300);
 		// Only show it if needed.
-		private bool show = false;
+		private string show = "false";
 		private string existingSave = "";
 
-		void OnGUI () 
+
+		void OnGUI()
 		{
-			if(show)
-				windowRect = GUI.Window (0, windowRect, DialogWindow, "Overwrite existing save?");
+			switch (show)
+			{
+				case "Overwrite":
+					windowRect = GUI.Window(0, windowRect, DrawOverwriteCntrls, "Overwrite existing save?");
+					break;
+
+				case "Delete":
+					windowRect = GUI.Window(0, windowRect, DrawDeleteCntrls, "Delete existing save?");
+					break;
+
+				case "Tooltip":
+					windowRect = GUI.Window(0, windowRect, DrawOverwriteCntrls, "");
+					break;
+			}
 		}
 
-		// This is the actual window.
-		void DialogWindow (int windowID)
+
+		//// <summary>
+		/// Handles all the GUI drawing/layout.
+		/// </summary>
+		/// <param name="windowId">Window identifier.</param>
+		private void DrawOverwriteCntrls(int windowId)
 		{
 			GUILayout.BeginVertical();
 			GUILayout.Label("A savegame named: '" + existingSave + "' already exists.");
@@ -26,24 +43,58 @@ namespace KerbalImprovedSaveSystem
 
 			GUILayout.BeginHorizontal();
 			GUILayout.FlexibleSpace(); // moves the following buttons to the right
-			if(GUILayout.Button("Yes"))
+			if (GUILayout.Button("Yes"))
 			{
-				show = false;
+				show = "";
 			}
-			if(GUILayout.Button("No"))
+			if (GUILayout.Button("No"))
 			{
-				show = false;
+				show = "";
 			}
 			GUILayout.EndHorizontal();
 
 			GUILayout.EndVertical();
 		}
 
+
+		//// <summary>
+		/// Handles all the GUI drawing/layout.
+		/// </summary>
+		/// <param name="windowId">Window identifier.</param>
+		private void DrawDeleteCntrls(int windowId)
+		{
+			GUILayout.BeginVertical();
+			GUILayout.Label(existingSave);
+
+			GUILayout.BeginHorizontal();
+			GUILayout.FlexibleSpace(); // moves the following buttons to the right
+			if (GUILayout.Button("Yes"))
+			{
+				show = "";
+			}
+			if (GUILayout.Button("No"))
+			{
+				show = "";
+			}
+			GUILayout.EndHorizontal();
+
+			GUILayout.EndVertical();
+		}
+
+
 		// To open the dialogue from outside of the script.
-		public void Show(string fileName)
+		public void ConfirmOverwrite(string fileName)
 		{
 			existingSave = fileName;
-			show = true;
+			show = "Overwrite";
+		}
+
+
+		// To open the dialogue from outside of the script.
+		public void ConfirmDelete(string fileName)
+		{
+			existingSave = fileName;
+			show = "Delete";
 		}
 	}
 }
