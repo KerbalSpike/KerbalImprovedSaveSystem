@@ -1,32 +1,52 @@
-﻿using UnityEngine;
-using System.Collections;
+﻿using KSP.IO;
+using UnityEngine;
 
 namespace KerbalImprovedSaveSystem
 {
 	public class KISSDialog : MonoBehaviour
 	{
 		// 200x300 px window will apear in the center of the screen.
-		private Rect windowRect = new Rect((Screen.width - 200) / 2, (Screen.height - 300) / 2, 200, 300);
+		private Rect windowRect;
+		private GUIStyle _dialogStyle, _buttonStyle;
 		// Only show it if needed.
-		private string show = "false";
+		private string dialogType = "";
+		private bool isVisible = false;
 		private string existingSave = "";
 
 
+
+		/// <summary>
+		/// Handles initialization of the dialog
+		/// </summary>
+		void Start()
+		{
+			windowRect = new Rect((Screen.width - 200) / 2, (Screen.height - 100) / 2, 200, 100);
+
+			_dialogStyle = new GUIStyle(HighLogic.Skin.window);
+			_dialogStyle.normal.background = HighLogic.Skin.textField.normal.background;
+
+			_buttonStyle = new GUIStyle(HighLogic.Skin.button);
+
+		}
+
+
+		/// <summary>
+		/// 
+		/// </summary>
 		void OnGUI()
 		{
-			switch (show)
+			if (isVisible)
 			{
-				case "Overwrite":
-					windowRect = GUI.Window(0, windowRect, DrawOverwriteCntrls, "Overwrite existing save?");
-					break;
+				switch (dialogType)
+				{
+					case "Overwrite":
+						windowRect = GUI.ModalWindow(0, windowRect, DrawControls, "Overwrite existing save?", _dialogStyle);
+						break;
 
-				case "Delete":
-					windowRect = GUI.Window(0, windowRect, DrawDeleteCntrls, "Delete existing save?");
-					break;
-
-				case "Tooltip":
-					windowRect = GUI.Window(0, windowRect, DrawOverwriteCntrls, "");
-					break;
+					case "Delete":
+						windowRect = GUI.ModalWindow(0, windowRect, DrawControls, "Delete existing save?", _dialogStyle);
+						break;
+				}
 			}
 		}
 
@@ -35,66 +55,50 @@ namespace KerbalImprovedSaveSystem
 		/// Handles all the GUI drawing/layout.
 		/// </summary>
 		/// <param name="windowId">Window identifier.</param>
-		private void DrawOverwriteCntrls(int windowId)
+		private void DrawControls(int windowId)
 		{
 			GUILayout.BeginVertical();
-			GUILayout.Label("A savegame named: '" + existingSave + "' already exists.");
-			GUILayout.Label("Overwrite?");
+			GUILayout.Label("'" + existingSave + "'", GUILayout.ExpandWidth(true));
 
 			GUILayout.BeginHorizontal();
 			GUILayout.FlexibleSpace(); // moves the following buttons to the right
-			if (GUILayout.Button("Yes"))
+			if (GUILayout.Button("Yes", _buttonStyle))
 			{
-				show = "";
+				dialogType = "";
+				isVisible = false;
 			}
-			if (GUILayout.Button("No"))
+			if (GUILayout.Button("No", _buttonStyle))
 			{
-				show = "";
+				dialogType = "";
+				isVisible = false;
 			}
 			GUILayout.EndHorizontal();
 
 			GUILayout.EndVertical();
 		}
+		
 
-
-		//// <summary>
-		/// Handles all the GUI drawing/layout.
+		/// <summary>
+		/// Show a dialog that asks if you want to overwrite a file.
 		/// </summary>
-		/// <param name="windowId">Window identifier.</param>
-		private void DrawDeleteCntrls(int windowId)
-		{
-			GUILayout.BeginVertical();
-			GUILayout.Label(existingSave);
-
-			GUILayout.BeginHorizontal();
-			GUILayout.FlexibleSpace(); // moves the following buttons to the right
-			if (GUILayout.Button("Yes"))
-			{
-				show = "";
-			}
-			if (GUILayout.Button("No"))
-			{
-				show = "";
-			}
-			GUILayout.EndHorizontal();
-
-			GUILayout.EndVertical();
-		}
-
-
-		// To open the dialogue from outside of the script.
+		/// <param name="fileName"></param>
 		public void ConfirmOverwrite(string fileName)
 		{
 			existingSave = fileName;
-			show = "Overwrite";
+			dialogType = "Overwrite";
+			isVisible = true;
 		}
 
 
-		// To open the dialogue from outside of the script.
+		/// <summary>
+		/// Show a dialog that asks if you want to delete a file.
+		/// </summary>
+		/// <param name="fileName"></param>
 		public void ConfirmDelete(string fileName)
 		{
 			existingSave = fileName;
-			show = "Delete";
+			dialogType = "Delete";
+			isVisible = true;
 		}
 	}
 }

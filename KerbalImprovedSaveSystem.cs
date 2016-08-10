@@ -1,9 +1,9 @@
 ﻿using KerbalImprovedSaveSystem.Extensions;
 using KSP.IO;
-using UnityEngine;
 using System;
 using System.Collections.Generic;
 using System.IO;
+using UnityEngine;
 
 namespace KerbalImprovedSaveSystem
 {
@@ -44,8 +44,9 @@ namespace KerbalImprovedSaveSystem
 		private PluginConfiguration config;
 
 		// stuff for controlling the suggested name for the savegame when opening KISS
-		private string[] dfltSaveNames = new string[] { "{Time}_{ActiveVessel}", "{ActiveVessel}_{Time}", "quicksave" };
+		private string[] dfltSaveNames;
 		private int selectedDfltSaveNameInt = 0;
+		private GUIContent[] sctGridContent;
 
 		// flags to configure behaviour
 
@@ -65,6 +66,8 @@ namespace KerbalImprovedSaveSystem
 		/// </summary>
 		void Start()
 		{
+			_kissDialog = gameObject.AddComponent<KISSDialog>();
+
 			InitSettings();
 
 			config = PluginConfiguration.CreateForType<KerbalImprovedSaveSystem>();
@@ -75,6 +78,13 @@ namespace KerbalImprovedSaveSystem
 			useGameTime = config.GetValue<bool>("useGameTime", false);
 			reverseOrder = config.GetValue<bool>("reverseOrder", false);
 			selectedDfltSaveNameInt = config.GetValue<int>("selectedDfltSaveNameInt", 0);
+
+			dfltSaveNames = new string[] { "{Time}_{ActiveVessel}", "{ActiveVessel}_{Time}", "quicksave" };
+			sctGridContent = new GUIContent[] {
+				new GUIContent("\"" + dfltSaveNames[0] + "\"","\"{Time}\" is replaced with either the current system or game time. \"{ActiveVessel}\" with the name of the current vessel."),
+				new GUIContent("\"" + dfltSaveNames[1] + "\"","\"{Time}\" is replaced with either the current system or game time. \"{ActiveVessel}\" with the name of the current vessel."),
+				new GUIContent("\"" + dfltSaveNames[2] + "\"","Use this option if you want to use KISS to quicksave.")
+			};
 		}
 
 
@@ -169,13 +179,20 @@ namespace KerbalImprovedSaveSystem
 
 			_windowPosSize = GUILayout.Window(this.GetInstanceID(), _windowPosSize, DrawControls, "Kerbal Improved Save System", _windowStyle);
 
+			// handle display of tooltip
 			if (!string.IsNullOrEmpty(_kissTooltip))
 			{
-				// This code is borrowed from "[x] Science!" Mod:
+				// This code is partially borrowed from "[x] Science!" Mod:
 				// calculate required height of the label for the given text and width
 				float boxHeight = _tooltipLblStyle.CalcHeight(new GUIContent(_kissTooltip), 190);
+				Rect tooltipPosSize = new Rect(Mouse.screenPos.x + 15, Mouse.screenPos.y + 15, 194, boxHeight + 4);
+				// Move tooltip left and/or above of cursor if it would be outside of screen
+				if ((tooltipPosSize.x + 15 + tooltipPosSize.width) > Screen.width)
+					tooltipPosSize.x = tooltipPosSize.x - 15 - tooltipPosSize.width;
+				if ((tooltipPosSize.y + 15 + tooltipPosSize.height) > Screen.height)
+					tooltipPosSize.y = tooltipPosSize.y - 15 - tooltipPosSize.height;
 				// create window and declare window function inside arguments of constructor
-				GUI.Window(1, new Rect(Mouse.screenPos.x + 15, Mouse.screenPos.y + 15, 194, boxHeight + 4), x =>
+				GUI.Window(1, tooltipPosSize, x =>
 				{
 					GUI.Label(new Rect(2, 2, 190, boxHeight), _kissTooltip, _tooltipLblStyle);
 				}, string.Empty, _tooltipWindowStyle);
@@ -244,7 +261,6 @@ namespace KerbalImprovedSaveSystem
 						{
 							dblClicked = false;
 							Save(selectedFileName);
-							Close("SaveDialog completed.");
 						}
 					}
 				}
@@ -256,17 +272,16 @@ namespace KerbalImprovedSaveSystem
 			selectedFileName = GUILayout.TextField(selectedFileName, _txtFieldStyle);
 
 			GUILayout.BeginHorizontal();
-			if (GUILayout.Button(new GUIContent("Use Default", "Use the suggested default filename for the quicksave."), _altBtnStyle))
+			if (GUILayout.Button(new GUIContent("Default", "Use the suggested default filename for the savegame."), _altBtnStyle))
 			{
 				selectedFileName = getDfltFileName();
 			}
-			GUILayout.Space(50);
+			GUILayout.Space(70);
 			if (existingSaveGames.Contains(selectedFileName))
 			{
 				if (GUILayout.Button("Delete", _delBtnStyle))
 				{
-					//TODO
-					_kissDialog.ConfirmDelete(selectedFileName);
+					Delete(selectedFileName);
 				}
 			}
 			GUILayout.FlexibleSpace(); // moves the following buttons to the right
@@ -277,7 +292,6 @@ namespace KerbalImprovedSaveSystem
 			if (GUILayout.Button("Save", _buttonStyle))
 			{
 				Save(selectedFileName);
-				Close("SaveDialog completed.");
 			}
 			GUILayout.EndHorizontal();
 
@@ -295,7 +309,7 @@ namespace KerbalImprovedSaveSystem
 				reverseOrder = GUILayout.Toggle(reverseOrder, new GUIContent("Reverse list", "If enabled, the list of savegames is shown in reverse order."), _toggleStyle);
 
 				GUILayout.Label("Default filename:", _labelStyle);
-				selectedDfltSaveNameInt = GUILayout.SelectionGrid(selectedDfltSaveNameInt, dfltSaveNames, 1, _selectionGridSytle, GUILayout.ExpandWidth(true));
+				selectedDfltSaveNameInt = GUILayout.SelectionGrid(selectedDfltSaveNameInt, sctGridContent, 1, _selectionGridSytle, GUILayout.ExpandWidth(true));
 
 				GUILayout.EndVertical(); // end of settings pane
 			}
@@ -408,7 +422,7 @@ namespace KerbalImprovedSaveSystem
 		/// every time a savegame is loaded anyway).
 		/// </summary>
 		/// <returns>List of existing savegames without their paths and extensions.</returns>
-		/// <param name="saveFolder">Directory to search.</param>
+		/// <param name="saveDir">Directory to search.</param>
 		private List<string> getExistingSaves(string saveDir)
 		{
 			List<string> saveGames = null;
@@ -455,6 +469,26 @@ namespace KerbalImprovedSaveSystem
 
 
 		/// <summary>
+		/// Delete the specified filename.
+		/// </summary>
+		/// <param name="selectedSaveFileName">Filename to be deleted.</param>
+		private void Delete(string selectedSaveFileName)
+		{
+			if (confirmDelete)
+			{
+				// TODO dialog asking for confirmation
+				_kissDialog.ConfirmDelete(selectedFileName);
+			}
+			else
+			{
+				string filename = saveGameDir + selectedFileName + ".sfs";
+				System.IO.File.Delete(filename);
+				existingSaveGames.Remove(selectedFileName);
+				Debug.Log(modLogTag + "Savegame '" + filename + "' deleted.");
+
+			}
+		}
+		/// <summary>
 		/// Save the current game progress/status into the specified filename.
 		/// </summary>
 		/// <param name="selectedSaveFileName">File name to save the game into.</param>
@@ -462,7 +496,7 @@ namespace KerbalImprovedSaveSystem
 		{
 			if (confirmOverwrite && existingSaveGames.Contains(selectedFileName))
 			{
-				// TODO dialog asking for confirmation before overwriting file
+				// TODO dialog asking for confirmation
 				_kissDialog.ConfirmOverwrite(selectedFileName);
 			}
 			else
@@ -477,6 +511,8 @@ namespace KerbalImprovedSaveSystem
 				SaveMode s = SaveMode.OVERWRITE; // available SaveModes are: OVERWRITE, APPEND, ABORT
 				string filename = GamePersistence.SaveGame(currentGame, selectedSaveFileName, HighLogic.SaveFolder, s);
 				Debug.Log(modLogTag + "Game saved in '" + filename + "'");
+
+				Close("SaveDialog completed.");
 			}
 		}
 
