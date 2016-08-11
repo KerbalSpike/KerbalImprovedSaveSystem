@@ -7,7 +7,10 @@ using UnityEngine;
 
 namespace KerbalImprovedSaveSystem
 {
-	//delegate to execute file operations depending of dialog result (yes/no)
+	/// <summary>
+	/// Delegate to execute file operations depending of dialog result (yes/no).
+	/// </summary>
+	/// <param name="filename"></param>
 	internal delegate void FileOpCallback(string filename);
 
 	/// <summary>
@@ -21,25 +24,25 @@ namespace KerbalImprovedSaveSystem
 
 		// stuff to configure the GUI
 		private Rect _windowPosSize;
-		private bool _isVisible = false;
-		private KISSDialog _kissDialog = new KISSDialog();
-		private string _kissTooltip = "";
+		private bool _isVisible;
+		private KISSDialog _kissDialog;
+		private string _kissTooltip;
 		private GUIStyle _windowStyle, _labelStyle, _buttonStyle, _altBtnStyle, _delBtnStyle, _listBtnStyle, _listSelectionStyle, _txtFieldStyle, _listStyle, _toggleStyle, _selectionGridSytle, _tooltipWindowStyle, _tooltipLblStyle;
 		private Texture2D _settingsTexture;
-		private bool _hasInitStyles = false;
+		private bool _hasInitStyles;
 		// scroll position in the list of existing savegames
 		private Vector2 _scrollPos;
-		private bool _showSettings = false;
+		private bool _showSettings;
 
 		// stuff to detect double clicks
-		private bool dblClicked = false;
+		private bool dblClicked;
 		private DateTime lastClickTime;
 		public TimeSpan catchTime = TimeSpan.FromMilliseconds(250);
 
 		// savegame directory of the current came
 		private string saveGameDir;
 		// currently selected filename for savegame
-		private string selectedFileName = "";
+		private string selectedFileName;
 		// list of existing savegames
 		private List<string> existingSaveGames;
 
@@ -48,7 +51,7 @@ namespace KerbalImprovedSaveSystem
 
 		// stuff for controlling the suggested name for the savegame when opening KISS
 		private string[] dfltSaveNames;
-		private int selectedDfltSaveName = 0;
+		private int selectedDfltSaveName;
 		private GUIContent[] slctnGridContent;
 
 		// flags to configure behaviour
@@ -72,15 +75,6 @@ namespace KerbalImprovedSaveSystem
 			_kissDialog = gameObject.AddComponent<KISSDialog>();
 
 			InitSettings();
-
-			config = PluginConfiguration.CreateForType<KerbalImprovedSaveSystem>();
-			config.load();
-
-			confirmOverwrite = config.GetValue<bool>("confirmOverwrite", false);
-			confirmDelete = config.GetValue<bool>("confirmDelete", false);
-			useGameTime = config.GetValue<bool>("useGameTime", false);
-			reverseOrder = config.GetValue<bool>("reverseOrder", false);
-			selectedDfltSaveName = config.GetValue<int>("selectedDfltSaveNameInt", 0);
 
 			dfltSaveNames = new string[] { "{Time}_{ActiveVessel}", "{ActiveVessel}_{Time}", "quicksave" };
 			slctnGridContent = new GUIContent[] {
@@ -285,7 +279,6 @@ namespace KerbalImprovedSaveSystem
 				if (GUILayout.Button("Delete", _delBtnStyle))
 				{
 					ConfirmFileOp(confirmDelete, "Delete", selectedFileName, Delete);
-					//Delete(selectedFileName);
 				}
 			}
 			GUILayout.FlexibleSpace(); // moves the following buttons to the right
@@ -296,7 +289,6 @@ namespace KerbalImprovedSaveSystem
 			if (GUILayout.Button("Save", _buttonStyle))
 			{
 				ConfirmFileOp(confirmOverwrite && existingSaveGames.Contains(selectedFileName), "Overwrite", selectedFileName, Save);
-				//Save(selectedFileName);
 			}
 			GUILayout.EndHorizontal();
 
@@ -335,12 +327,27 @@ namespace KerbalImprovedSaveSystem
 
 
 		/// <summary>
-		/// Loads stored configuration from file (or initializes default values)
+		/// Loads stored configuration from file (and/or initializes default values)
 		/// </summary>
 		private void InitSettings()
 		{
 			_windowPosSize = new Rect(0, 0, 400, 500);
+			_isVisible = false;
+			_hasInitStyles = false;
+
 			_showSettings = false;
+			_kissTooltip = string.Empty;
+			dblClicked = false;
+			selectedFileName = string.Empty;
+
+			config = PluginConfiguration.CreateForType<KerbalImprovedSaveSystem>();
+			config.load();
+
+			confirmOverwrite = config.GetValue<bool>("confirmOverwrite", false);
+			confirmDelete = config.GetValue<bool>("confirmDelete", false);
+			useGameTime = config.GetValue<bool>("useGameTime", false);
+			reverseOrder = config.GetValue<bool>("reverseOrder", false);
+			selectedDfltSaveName = config.GetValue<int>("selectedDfltSaveNameInt", 0);
 		}
 
 
