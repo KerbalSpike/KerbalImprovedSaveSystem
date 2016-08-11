@@ -7,6 +7,9 @@ using UnityEngine;
 
 namespace KerbalImprovedSaveSystem
 {
+	//delegate to execute file operations depending of dialog result (yes/no)
+	internal delegate void FileOpCallback(string filename);
+
 	/// <summary>
 	/// Start Kerbal Improved Save System when in a flight scene.
 	/// </summary>
@@ -45,8 +48,8 @@ namespace KerbalImprovedSaveSystem
 
 		// stuff for controlling the suggested name for the savegame when opening KISS
 		private string[] dfltSaveNames;
-		private int selectedDfltSaveNameInt = 0;
-		private GUIContent[] sctGridContent;
+		private int selectedDfltSaveName = 0;
+		private GUIContent[] slctnGridContent;
 
 		// flags to configure behaviour
 
@@ -77,10 +80,10 @@ namespace KerbalImprovedSaveSystem
 			confirmDelete = config.GetValue<bool>("confirmDelete", false);
 			useGameTime = config.GetValue<bool>("useGameTime", false);
 			reverseOrder = config.GetValue<bool>("reverseOrder", false);
-			selectedDfltSaveNameInt = config.GetValue<int>("selectedDfltSaveNameInt", 0);
+			selectedDfltSaveName = config.GetValue<int>("selectedDfltSaveNameInt", 0);
 
 			dfltSaveNames = new string[] { "{Time}_{ActiveVessel}", "{ActiveVessel}_{Time}", "quicksave" };
-			sctGridContent = new GUIContent[] {
+			slctnGridContent = new GUIContent[] {
 				new GUIContent("\"" + dfltSaveNames[0] + "\"","\"{Time}\" is replaced with either the current system or game time. \"{ActiveVessel}\" with the name of the current vessel."),
 				new GUIContent("\"" + dfltSaveNames[1] + "\"","\"{Time}\" is replaced with either the current system or game time. \"{ActiveVessel}\" with the name of the current vessel."),
 				new GUIContent("\"" + dfltSaveNames[2] + "\"","Use this option if you want to use KISS to quicksave.")
@@ -281,7 +284,8 @@ namespace KerbalImprovedSaveSystem
 			{
 				if (GUILayout.Button("Delete", _delBtnStyle))
 				{
-					Delete(selectedFileName);
+					ConfirmFileOp(confirmDelete, "Delete", selectedFileName, Delete);
+					//Delete(selectedFileName);
 				}
 			}
 			GUILayout.FlexibleSpace(); // moves the following buttons to the right
@@ -291,7 +295,8 @@ namespace KerbalImprovedSaveSystem
 			}
 			if (GUILayout.Button("Save", _buttonStyle))
 			{
-				Save(selectedFileName);
+				ConfirmFileOp(confirmOverwrite && existingSaveGames.Contains(selectedFileName), "Overwrite", selectedFileName, Save);
+				//Save(selectedFileName);
 			}
 			GUILayout.EndHorizontal();
 
@@ -309,7 +314,7 @@ namespace KerbalImprovedSaveSystem
 				reverseOrder = GUILayout.Toggle(reverseOrder, new GUIContent("Reverse list", "If enabled, the list of savegames is shown in reverse order."), _toggleStyle);
 
 				GUILayout.Label("Default filename:", _labelStyle);
-				selectedDfltSaveNameInt = GUILayout.SelectionGrid(selectedDfltSaveNameInt, sctGridContent, 1, _selectionGridSytle, GUILayout.ExpandWidth(true));
+				selectedDfltSaveName = GUILayout.SelectionGrid(selectedDfltSaveName, slctnGridContent, 1, _selectionGridSytle, GUILayout.ExpandWidth(true));
 
 				GUILayout.EndVertical(); // end of settings pane
 			}
@@ -336,7 +341,6 @@ namespace KerbalImprovedSaveSystem
 		{
 			_windowPosSize = new Rect(0, 0, 400, 500);
 			_showSettings = false;
-
 		}
 
 
@@ -456,7 +460,7 @@ namespace KerbalImprovedSaveSystem
 		/// <returns></returns>
 		private string getDfltFileName()
 		{
-			string result = dfltSaveNames[selectedDfltSaveNameInt];
+			string result = dfltSaveNames[selectedDfltSaveName];
 			if (useGameTime)
 				//TODO use planetarum universal time
 				result = result.Replace("{Time}", DateTime.Now.ToString("yyyyMMdd_HHmmss"));
@@ -469,51 +473,56 @@ namespace KerbalImprovedSaveSystem
 
 
 		/// <summary>
+		/// Gets permission to perform some kind of operation on a file.
+		/// </summary>
+		/// <param name="confirmRequired">If confirmation is disabled, the operation is performed directly.</param>
+		/// <param name="opType">Type of file operation. Currently available: "Delete" and "Save".</param>
+		/// <param name="filename">The name of the file to be manipulated.</param>
+		/// <param name="fileOp">Callback for the dialog to execute in case user confirms action.</param>
+		private void ConfirmFileOp(bool confirmRequired, string opType, string filename, FileOpCallback fileOp)
+		{
+			if (confirmRequired)
+			{
+				_kissDialog.ConfirmFileOp(opType, selectedFileName, fileOp);
+			}
+			else
+			{
+				fileOp(filename);
+			}
+		}
+
+
+		/// <summary>
 		/// Delete the specified filename.
 		/// </summary>
 		/// <param name="selectedSaveFileName">Filename to be deleted.</param>
 		private void Delete(string selectedSaveFileName)
 		{
-			if (confirmDelete)
-			{
-				// TODO dialog asking for confirmation
-				_kissDialog.ConfirmDelete(selectedFileName);
-			}
-			else
-			{
-				string filename = saveGameDir + selectedFileName + ".sfs";
-				System.IO.File.Delete(filename);
-				existingSaveGames.Remove(selectedFileName);
-				Debug.Log(modLogTag + "Savegame '" + filename + "' deleted.");
-
-			}
+			string filename = saveGameDir + selectedFileName + ".sfs";
+			System.IO.File.Delete(filename);
+			existingSaveGames.Remove(selectedFileName);
+			Debug.Log(modLogTag + "Savegame '" + filename + "' deleted.");
 		}
+
+
 		/// <summary>
 		/// Save the current game progress/status into the specified filename.
 		/// </summary>
 		/// <param name="selectedSaveFileName">File name to save the game into.</param>
 		private void Save(string selectedSaveFileName)
 		{
-			if (confirmOverwrite && existingSaveGames.Contains(selectedFileName))
-			{
-				// TODO dialog asking for confirmation
-				_kissDialog.ConfirmOverwrite(selectedFileName);
-			}
-			else
-			{
-				// first we need to acquire the current game status
-				Game currentGame = HighLogic.CurrentGame.Updated();
-				// then we have to reset the startScene to flight, because calling Updated() sets it to space center.
-				currentGame.startScene = GameScenes.FLIGHT;
+			// first we need to acquire the current game status
+			Game currentGame = HighLogic.CurrentGame.Updated();
+			// then we have to reset the startScene to flight, because calling Updated() sets it to space center.
+			currentGame.startScene = GameScenes.FLIGHT;
 
-				// now we can save it...
+			// now we can save it...
 
-				SaveMode s = SaveMode.OVERWRITE; // available SaveModes are: OVERWRITE, APPEND, ABORT
-				string filename = GamePersistence.SaveGame(currentGame, selectedSaveFileName, HighLogic.SaveFolder, s);
-				Debug.Log(modLogTag + "Game saved in '" + filename + "'");
+			SaveMode s = SaveMode.OVERWRITE; // available SaveModes are: OVERWRITE, APPEND, ABORT
+			string filename = GamePersistence.SaveGame(currentGame, selectedSaveFileName, HighLogic.SaveFolder, s);
+			Debug.Log(modLogTag + "Game saved in '" + filename + "'");
 
-				Close("SaveDialog completed.");
-			}
+			Close("SaveDialog completed.");
 		}
 
 
@@ -529,7 +538,7 @@ namespace KerbalImprovedSaveSystem
 			config.SetValue("confirmDelete", confirmDelete);
 			config.SetValue("useGameTime", useGameTime);
 			config.SetValue("reverseOrder", reverseOrder);
-			config.SetValue("selectedDfltSaveNameInt", selectedDfltSaveNameInt);
+			config.SetValue("selectedDfltSaveNameInt", selectedDfltSaveName);
 
 			config.save();
 

@@ -5,13 +5,13 @@ namespace KerbalImprovedSaveSystem
 {
 	public class KISSDialog : MonoBehaviour
 	{
-		// 200x300 px window will apear in the center of the screen.
 		private Rect windowRect;
 		private GUIStyle _dialogStyle, _buttonStyle;
-		// Only show it if needed.
-		private string dialogType = "";
-		private bool isVisible = false;
-		private string existingSave = "";
+
+		private string dialogType, existingSave;
+		private bool isVisible;
+
+		private FileOpCallback fileOperation;
 
 
 
@@ -27,6 +27,10 @@ namespace KerbalImprovedSaveSystem
 
 			_buttonStyle = new GUIStyle(HighLogic.Skin.button);
 
+			fileOperation = null;
+			dialogType = string.Empty;
+			existingSave = string.Empty;
+			isVisible = false;
 		}
 
 
@@ -64,41 +68,40 @@ namespace KerbalImprovedSaveSystem
 			GUILayout.FlexibleSpace(); // moves the following buttons to the right
 			if (GUILayout.Button("Yes", _buttonStyle))
 			{
-				dialogType = "";
+				// user confirmed action -> execute operation on the file.
+				fileOperation(existingSave);
+				// reset and hide dialog
+				fileOperation = null;
+				dialogType = string.Empty;
+				existingSave = string.Empty;
 				isVisible = false;
 			}
 			if (GUILayout.Button("No", _buttonStyle))
 			{
-				dialogType = "";
+				// no confirmation, no action
+				fileOperation = null;
+				dialogType = string.Empty;
+				existingSave = string.Empty;
 				isVisible = false;
 			}
 			GUILayout.EndHorizontal();
 
 			GUILayout.EndVertical();
 		}
-		
-
-		/// <summary>
-		/// Show a dialog that asks if you want to overwrite a file.
-		/// </summary>
-		/// <param name="fileName"></param>
-		public void ConfirmOverwrite(string fileName)
-		{
-			existingSave = fileName;
-			dialogType = "Overwrite";
-			isVisible = true;
-		}
 
 
 		/// <summary>
-		/// Show a dialog that asks if you want to delete a file.
+		/// Request user confirmation for a file operation (delete/overwrite).
 		/// </summary>
+		/// <param name="opType"></param>
 		/// <param name="fileName"></param>
-		public void ConfirmDelete(string fileName)
+		/// <param name="fileOp"></param>
+		internal void ConfirmFileOp(string opType, string fileName, FileOpCallback fileOp)
 		{
 			existingSave = fileName;
-			dialogType = "Delete";
+			dialogType = opType;
 			isVisible = true;
+			fileOperation = fileOp;
 		}
 	}
 }
