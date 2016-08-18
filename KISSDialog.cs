@@ -5,6 +5,7 @@ namespace KerbalImprovedSaveSystem
 {
 	public class KISSDialog : MonoBehaviour
 	{
+		internal Rect parentWindow;
 		private Rect windowRect;
 		private GUIStyle _dialogStyle, _buttonStyle;
 
@@ -40,6 +41,7 @@ namespace KerbalImprovedSaveSystem
 		void OnGUI()
 		{
 			if (isVisible)
+				windowRect = new Rect(parentWindow.x + ((parentWindow.width - 200) / 2), parentWindow.y + ((parentWindow.height - 100) / 2), 200, 100);
 			{
 				switch (dialogType)
 				{
@@ -55,7 +57,7 @@ namespace KerbalImprovedSaveSystem
 		}
 
 
-		//// <summary>
+		/// <summary>
 		/// Handles all the GUI drawing/layout.
 		/// </summary>
 		/// <param name="windowId">Window identifier.</param>

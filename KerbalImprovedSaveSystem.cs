@@ -37,7 +37,7 @@ namespace KerbalImprovedSaveSystem
 		// stuff to detect double clicks
 		private bool dblClicked;
 		private DateTime lastClickTime;
-		public TimeSpan catchTime = TimeSpan.FromMilliseconds(250);
+		private TimeSpan catchTime = TimeSpan.FromMilliseconds(250);
 
 		// savegame directory of the current came
 		private string saveGameDir;
@@ -344,7 +344,7 @@ namespace KerbalImprovedSaveSystem
 			config.load();
 
 			confirmOverwrite = config.GetValue<bool>("confirmOverwrite", false);
-			confirmDelete = config.GetValue<bool>("confirmDelete", false);
+			confirmDelete = config.GetValue<bool>("confirmDelete", true);
 			useGameTime = config.GetValue<bool>("useGameTime", false);
 			reverseOrder = config.GetValue<bool>("reverseOrder", false);
 			selectedDfltSaveName = config.GetValue<int>("selectedDfltSaveNameInt", 0);
@@ -469,8 +469,14 @@ namespace KerbalImprovedSaveSystem
 		{
 			string result = dfltSaveNames[selectedDfltSaveName];
 			if (useGameTime)
-				//TODO use planetarum universal time
-				result = result.Replace("{Time}", DateTime.Now.ToString("yyyyMMdd_HHmmss"));
+			{
+				//use planetarum universal time
+				string timeStamp = KSPUtil.PrintDateCompact(Planetarium.GetUniversalTime(), true, true);
+				// PrintDateNew output has format "Y1, D01, 0:24:45"
+				// -> change to "Y1_D01_0_24_43"
+				timeStamp = timeStamp.Replace(", ", "_").Replace(":", "_");
+				result = result.Replace("{Time}", timeStamp);
+			}
 			else
 				result = result.Replace("{Time}", DateTime.Now.ToString("yyyyMMdd_HHmmss"));
 			result = result.Replace("{ActiveVessel}", FlightGlobals.ActiveVessel.vesselName);
@@ -490,6 +496,7 @@ namespace KerbalImprovedSaveSystem
 		{
 			if (confirmRequired)
 			{
+				_kissDialog.parentWindow = _windowPosSize; //update position of main window
 				_kissDialog.ConfirmFileOp(opType, selectedFileName, fileOp);
 			}
 			else

@@ -2,10 +2,6 @@
 Things to implement, roughly in order of (decreasing) importance:
 =================================================================
 
-*) Make the timestamp adhere to the game time option.
-*) Make dialog appear at the center of the KISS window instead of center of screen
-
-
 -----------
 Known bugs:
 -----------
@@ -23,3 +19,5 @@ finished stuff:
 *) Figure out how to properly built a yes/no dialog and implement one
 **) Make Save button adhere to the confirm overwrite option
 **) Make delete button adhere to the confirm delete option
+*) Make dialog appear at the center of the KISS window instead of center of screen.
+*) Make the timestamp adhere to the game time option.
