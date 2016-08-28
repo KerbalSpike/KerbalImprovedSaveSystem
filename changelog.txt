@@ -1,7 +1,7 @@
 KISS version history
 ====================
 
-2.0.0, 2016-08-29
+2.0.0-beta1, 2016-08-29
 	Added:		Allow deletion of savegames directly from KISS.
 	Added:		KISSDialog class for creating modal dialogs.
 	Added:		Settings panel and a button (with icon) to toggle it.
