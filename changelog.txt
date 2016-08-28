@@ -10,7 +10,7 @@ KISS version history
 	Added:		Option to choose between system time and game time for the timestamp.
 	Added:		Option to reverse the list of existing savegames.
 	Added:		Three choices for the filename suggestion: "{timestamp}_{vesselName}"; "{vesselName}_{timestamp}" or "quicksave".
-	Added:		Quicksave mode: save current game with the suggesed filename without showing GUI (requires "MOD + F8" to show window again).
+	Added:		Quicksave mode: save current game with the suggested filename without showing GUI (requires "MOD + F8" to show window again).
 	Fixed:		KISS now reacts properly to "ESC" and "ENTER/RETURN" in every situation.
 
 
