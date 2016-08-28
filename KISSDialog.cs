@@ -8,9 +8,11 @@ namespace KerbalImprovedSaveSystem
 		internal Rect parentWindow;
 		private Rect windowRect;
 		private GUIStyle _dialogStyle, _buttonStyle;
+		private int kissDialogHeight;
+		private int kissDialogWidth;
 
 		private string dialogType, existingSave;
-		private bool isVisible;
+		internal bool isVisible;
 
 		private FileOpCallback fileOperation;
 
@@ -21,7 +23,10 @@ namespace KerbalImprovedSaveSystem
 		/// </summary>
 		void Start()
 		{
-			windowRect = new Rect((Screen.width - 200) / 2, (Screen.height - 100) / 2, 200, 100);
+			kissDialogHeight = 100;
+			kissDialogWidth = 200;
+
+			windowRect = new Rect((Screen.width - kissDialogWidth) / 2, (Screen.height - kissDialogHeight) / 2, kissDialogWidth, kissDialogHeight);
 
 			_dialogStyle = new GUIStyle(HighLogic.Skin.window);
 			_dialogStyle.normal.background = HighLogic.Skin.textField.normal.background;
@@ -41,8 +46,33 @@ namespace KerbalImprovedSaveSystem
 		void OnGUI()
 		{
 			if (isVisible)
-				windowRect = new Rect(parentWindow.x + ((parentWindow.width - 200) / 2), parentWindow.y + ((parentWindow.height - 100) / 2), 200, 100);
 			{
+				// abort using escape
+				if ((Event.current.type == EventType.KeyUp) && (Event.current.keyCode == KeyCode.Escape))
+				{
+					// consume event in case ESC was pressed, otherwise the main KISS window will react to ESC key while dialog is visible!
+					Event.current.Use();
+					Event.current.keyCode = KeyCode.None;
+					Hide();
+				}
+				if ((Event.current.type == EventType.KeyUp) && ((Event.current.keyCode == KeyCode.Return) || (Event.current.keyCode == KeyCode.KeypadEnter)))
+				{
+					// consume event in case return/enter was pressed, otherwise the main KISS window will react to return/enter keys while dialog is visible!
+					Event.current.Use();
+					Event.current.keyCode = KeyCode.None;
+				}
+
+				if (existingSave.Length > 20)
+				{
+					// rescale dialog to better fit larger filenames.
+					kissDialogWidth = Mathf.Min(Mathf.CeilToInt(200 * (existingSave.Length / 20.0f)), (int)(parentWindow.width - 20));
+					//kissDialogWidth = (int)(parentWindow.width - 20);
+				}
+				else
+					kissDialogWidth = 200;
+
+				windowRect = new Rect(parentWindow.x + ((parentWindow.width - kissDialogWidth) / 2), parentWindow.y + ((parentWindow.height - kissDialogHeight) / 2), kissDialogWidth, kissDialogHeight);
+
 				switch (dialogType)
 				{
 					case "Overwrite":
@@ -73,22 +103,27 @@ namespace KerbalImprovedSaveSystem
 				// user confirmed action -> execute operation on the file.
 				fileOperation(existingSave);
 				// reset and hide dialog
-				fileOperation = null;
-				dialogType = string.Empty;
-				existingSave = string.Empty;
-				isVisible = false;
+				Hide();
 			}
 			if (GUILayout.Button("No", _buttonStyle))
 			{
-				// no confirmation, no action
-				fileOperation = null;
-				dialogType = string.Empty;
-				existingSave = string.Empty;
-				isVisible = false;
+				// no confirmation, no action, just reset and hide dialog
+				Hide();
 			}
 			GUILayout.EndHorizontal();
 
 			GUILayout.EndVertical();
+		}
+
+		/// <summary>
+		/// Resets and hides the dialog;
+		/// </summary>
+		private void Hide()
+		{
+			fileOperation = null;
+			dialogType = string.Empty;
+			existingSave = string.Empty;
+			isVisible = false;
 		}
 
 
