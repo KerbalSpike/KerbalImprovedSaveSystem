@@ -1,11 +1,24 @@
 KISS version history
 ====================
 
+2.0.0, 2016-08-29
+	Added:		Allow deletion of savegames directly from KISS.
+	Added:		KISSDialog class for creating modal dialogs.
+	Added:		Settings panel and a button (with icon) to toggle it.
+	Added:		Option to require confirmation before overwriting existing files.
+	Added:		Option to require confirmation before deleting existing files.
+	Added:		Option to choose between system time and game time for the timestamp.
+	Added:		Option to reverse the list of existing savegames.
+	Added:		Three choices for the filename suggestion: "{timestamp}_{vesselName}"; "{vesselName}_{timestamp}" or "quicksave".
+	Added:		Quicksave mode: save current game with the suggesed filename without showing GUI (requires "MOD + F8" to show window again).
+	Fixed:		KISS now reacts properly to "ESC" and "ENTER/RETURN" in every situation.
+
+
 1.1.1, 2016-06-24
 	Compiled against KSP 1.1.3.
 	Changed IDE from Xamarin to Visual Studio 2015.
 
-	
+
 1.1.0, 2016-04-24
 	Fixed:		Quicksaves created with KISS no longer put the player at the space center after loading them in KSP 1.1.
 	Changed:	Rebuilt the GUI code to work with KSP 1.1 and Unity 5. (Fortunately everything still works with KSP 1.0.5, yay!)
@@ -17,11 +30,11 @@ KISS version history
 	Initial public release.
 	Added:		Select and immediately overwrite an existing savegame using double-click.
 
-	
+
 0.9.1, 2016-04-05
 	Changed:	Updated README file.
 	Added:		Changelog (changelog.txt).
 
-	
+
 0.9.0, 2016-04-05
 	Added: 		Highlighting of currently selected savegame in list.
