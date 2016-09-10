@@ -66,7 +66,6 @@ namespace KerbalImprovedSaveSystem
 				{
 					// rescale dialog to better fit larger filenames.
 					kissDialogWidth = Mathf.Min(Mathf.CeilToInt(200 * (existingSave.Length / 20.0f)), (int)(parentWindow.width - 20));
-					//kissDialogWidth = (int)(parentWindow.width - 20);
 				}
 				else
 					kissDialogWidth = 200;

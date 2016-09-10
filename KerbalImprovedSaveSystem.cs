@@ -80,8 +80,8 @@ namespace KerbalImprovedSaveSystem
 
 			dfltSaveNames = new string[] { "{Time}_{ActiveVessel}", "{ActiveVessel}_{Time}", "quicksave" };
 			slctnGridContent = new GUIContent[] {
-				new GUIContent("\"" + dfltSaveNames[0] + "\"","\"{Time}\" is replaced with either the current system or game time. \"{ActiveVessel}\" with the name of the current vessel."),
-				new GUIContent("\"" + dfltSaveNames[1] + "\"","\"{Time}\" is replaced with either the current system or game time. \"{ActiveVessel}\" with the name of the current vessel."),
+				new GUIContent("\"" + dfltSaveNames[0] + "\"","\"{Time}\" is replaced with either the current system or game time, \"{ActiveVessel}\" with the name of the current vessel."),
+				new GUIContent("\"" + dfltSaveNames[1] + "\"","\"{Time}\" is replaced with either the current system or game time, \"{ActiveVessel}\" with the name of the current vessel."),
 				new GUIContent("\"" + dfltSaveNames[2] + "\"","Use this option if you want to use KISS to quicksave.")
 			};
 		}
@@ -230,7 +230,7 @@ namespace KerbalImprovedSaveSystem
 			{
 				_showSettings = !_showSettings;
 			}
-			GUILayout.EndHorizontal();
+			GUILayout.EndHorizontal(); // END area above file list
 
 			GUILayout.Space(6);
 
@@ -263,7 +263,7 @@ namespace KerbalImprovedSaveSystem
 						// highlight the list item that is currently selected
 						_renderStyle = _listSelectionStyle;
 					}
-					if (GUILayout.Button(saveGameName, _renderStyle, GUILayout.MinWidth(_windowPosSize.width - 12 - 12 - 16)))
+					if (GUILayout.Button(saveGameName, _renderStyle))
 					{
 						selectedFileName = saveGameName;
 						if (dblClicked)
@@ -334,7 +334,7 @@ namespace KerbalImprovedSaveSystem
 			GUI.DragWindow();
 
 			_kissTooltip = GUI.tooltip;
-			// This code (and comment) is borrowed from "[x] Science!" Mod:
+			// This code (and comment) is borrowed from "[x] Science!" mod:
 			// If this window gets focus, it pushes the tooltip behind the window, which looks weird.
 			// Just hide the tooltip while mouse buttons are held down to avoid this.
 			if (Input.GetMouseButton(0) || Input.GetMouseButton(1) || Input.GetMouseButton(2))
@@ -412,7 +412,6 @@ namespace KerbalImprovedSaveSystem
 			_listBtnStyle.alignment = TextAnchor.MiddleLeft;
 			_listBtnStyle.hover.background = _listBtnStyle.normal.background;
 			_listBtnStyle.normal.background = null;
-			_listBtnStyle.stretchWidth = false;
 
 			_listSelectionStyle = new GUIStyle(HighLogic.Skin.button);
 			_listSelectionStyle.alignment = TextAnchor.MiddleLeft;
@@ -420,7 +419,6 @@ namespace KerbalImprovedSaveSystem
 			_listSelectionStyle.hover.background = _listSelectionStyle.active.background;
 			_listSelectionStyle.normal.textColor = myYellow;
 			_listSelectionStyle.hover.textColor = myYellow;
-			_listSelectionStyle.stretchWidth = false;
 
 			_txtFieldStyle = new GUIStyle(HighLogic.Skin.textField);
 			_txtFieldStyle.stretchWidth = true;
