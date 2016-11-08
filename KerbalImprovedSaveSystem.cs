@@ -196,7 +196,8 @@ namespace KerbalImprovedSaveSystem
 			foreach (KeyCode vkey in System.Enum.GetValues(typeof(KeyCode)))
 			{
 				// do not alow the use of modifier keys, because that makes everything way more difficult
-				if (Input.GetKeyDown(vkey) && !Event.current.shift && !Event.current.control && !Event.current.alt && !Event.current.command)
+				if (Input.GetKeyDown(vkey) && !Event.current.shift && !Event.current.capsLock && 
+					!Event.current.control && !Event.current.alt && !Event.current.command)
 				{
 					// ignore ESC, Return, KeypadEnter and "modifier keys" (SHIFT, CTRL, ALT, Command (Mac))
 					if ((vkey != KeyCode.Return) && (vkey != KeyCode.Escape) && (vkey != KeyCode.KeypadEnter) &&
