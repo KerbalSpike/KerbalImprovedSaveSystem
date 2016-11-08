@@ -1,7 +1,7 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project DefaultTargets="Build" ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <PropertyGroup>
-    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug KSP 1.2.1</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
     <ProjectGuid>{DF2B9265-3296-4640-81FB-7FA24B782292}</ProjectGuid>
     <OutputType>Library</OutputType>
@@ -9,35 +9,52 @@
     <AssemblyName>KerbalImprovedSaveSystem</AssemblyName>
     <TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
     <Description>A small plugin for Kerbal Space Program that lets you choose from all existing savesgames when quicksaving so you don't have to remember a name and type it in if you want to overwrite a specific file.</Description>
-    <ReleaseVersion>1.1.0</ReleaseVersion>
+    <ReleaseVersion>2.0.0</ReleaseVersion>
     <UseMSBuildEngine>false</UseMSBuildEngine>
   </PropertyGroup>
-  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug KSP 1.2.1|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
     <DebugType>full</DebugType>
     <Optimize>false</Optimize>
-    <OutputPath>Output\KerbalImprovedSaveSystem\Plugins</OutputPath>
+    <OutputPath>Output\KSP_1.2.1\Plugins</OutputPath>
     <DefineConstants>DEBUG;</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
     <ConsolePause>false</ConsolePause>
   </PropertyGroup>
-  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release KSP 1.0.5|AnyCPU' ">
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release KSP 1.1.0|AnyCPU' ">
     <Optimize>true</Optimize>
-    <OutputPath>Output\KerbalImprovedSaveSystem\Plugins</OutputPath>
+    <OutputPath>Output\KSP_1.1.0\Plugins</OutputPath>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
     <ConsolePause>false</ConsolePause>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release KSP 1.1.3|AnyCPU' ">
     <Optimize>true</Optimize>
-    <OutputPath>Output\KerbalImprovedSaveSystem\Plugins</OutputPath>
+    <OutputPath>Output\KSP_1.1.3\Plugins</OutputPath>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
     <ConsolePause>false</ConsolePause>
   </PropertyGroup>
-  <ItemGroup>
-    <Reference Include="System" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release KSP 1.2.1|AnyCPU' ">
+    <OutputPath>Output\KSP_1.2.1\Plugins</OutputPath>
+    <Optimize>true</Optimize>
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <ConsolePause>false</ConsolePause>
+  </PropertyGroup>
+  <ItemGroup Condition=" '$(Configuration)|$(Platform)' == 'Release KSP 1.1.0|AnyCPU' ">
+    <Reference Include="Assembly-CSharp">
+      <HintPath>..\Kerbal Space Program 1.1.0\KSP_Data\Managed\Assembly-CSharp.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="UnityEngine">
+      <HintPath>..\Kerbal Space Program 1.1.0\KSP_Data\Managed\UnityEngine.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
+  </ItemGroup>
+  <ItemGroup Condition=" '$(Configuration)|$(Platform)' == 'Release KSP 1.1.3|AnyCPU' ">
     <Reference Include="Assembly-CSharp">
       <HintPath>..\Kerbal Space Program 1.1.3\KSP_Data\Managed\Assembly-CSharp.dll</HintPath>
       <Private>False</Private>
@@ -46,6 +63,29 @@
       <HintPath>..\Kerbal Space Program 1.1.3\KSP_Data\Managed\UnityEngine.dll</HintPath>
       <Private>False</Private>
     </Reference>
+  </ItemGroup>
+  <ItemGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug KSP 1.2.1|AnyCPU' ">
+    <Reference Include="Assembly-CSharp">
+      <HintPath>..\Kerbal Space Program 1.2.1\KSP_x64_Data\Managed\Assembly-CSharp.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="UnityEngine">
+      <HintPath>..\Kerbal Space Program 1.2.1\KSP_x64_Data\Managed\UnityEngine.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
+  </ItemGroup>
+  <ItemGroup Condition=" '$(Configuration)|$(Platform)' == 'Release KSP 1.2.1|AnyCPU' ">
+    <Reference Include="Assembly-CSharp">
+      <HintPath>..\Kerbal Space Program 1.2.1\KSP_x64_Data\Managed\Assembly-CSharp.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="UnityEngine">
+      <HintPath>..\Kerbal Space Program 1.2.1\KSP_x64_Data\Managed\UnityEngine.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
+  </ItemGroup>
+  <ItemGroup>
+	<Reference Include="System" />
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -65,8 +105,22 @@
       </Properties>
     </MonoDevelop>
   </ProjectExtensions>
-  <PropertyGroup>
-    <PostBuildEvent>"D:\Projects\KSP_mods\Tools\pdb2mdb\pdb2mdb.exe" "$(TargetFileName)"
-xcopy "$(TargetDir)*.*" "D:\Projects\KSP_mods\Kerbal Space Program 1.1.3\GameData\$(ProjectName)\Plugins" /D /E /C /R /I /K /Y</PostBuildEvent>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug KSP 1.2.1|AnyCPU' ">
+	<PostBuildEvent>"D:\Projects\KSP_mods\Tools\pdb2mdb\pdb2mdb.exe" "$(TargetFileName)"
+xcopy "$(ProjectDir)icons\*.*" "$(TargetDir)..\icons" /D /E /C /R /I /K /Y
+xcopy "$(TargetDir)..\*.*" "D:\Projects\KSP_mods\Kerbal Space Program 1.2.1\GameData\$(ProjectName)\" /D /E /C /R /I /K /Y</PostBuildEvent>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release KSP 1.1.0|AnyCPU' ">
+    <PostBuildEvent>xcopy "$(ProjectDir)icons\*.*" "$(TargetDir)..\icons" /D /E /C /R /I /K /Y
+xcopy "$(TargetDir)..\*.*" "D:\Projects\KSP_mods\Kerbal Space Program 1.1.0\GameData\$(ProjectName)\" /D /E /C /R /I /K /Y</PostBuildEvent>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release KSP 1.1.3|AnyCPU' ">
+    <PostBuildEvent>xcopy "$(ProjectDir)icons\*.*" "$(TargetDir)..\icons" /D /E /C /R /I /K /Y
+xcopy "$(TargetDir)..\*.*" "D:\Projects\KSP_mods\Kerbal Space Program 1.1.3\GameData\$(ProjectName)\" /D /E /C /R /I /K /Y</PostBuildEvent>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release KSP 1.2.1|AnyCPU' ">
+    <PreBuildEvent>del /F /S /Q "$(TargetDir)*.*"</PreBuildEvent>
+    <PostBuildEvent>xcopy "$(ProjectDir)icons\*.*" "$(TargetDir)..\icons" /D /E /C /R /I /K /Y
+xcopy "$(TargetDir)..\*.*" "D:\Projects\KSP_mods\Kerbal Space Program 1.2.1\GameData\$(ProjectName)\" /D /E /C /R /I /K /Y</PostBuildEvent>
   </PropertyGroup>
 </Project>

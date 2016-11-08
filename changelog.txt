@@ -1,10 +1,14 @@
 KISS version history
 ====================
 
+2.1.0, 2016-11-08
+	Added:		Made keyboard shortcut configurable.
+	
+	
 2.0.0, 2016-09-11
 	Fixed:		Width of buttons in list not adjusting properly to long filenames.
-	
-	
+
+
 2.0.0-beta1, 2016-08-29
 	Added:		Allow deletion of savegames directly from KISS.
 	Added:		KISSDialog class for creating modal dialogs.

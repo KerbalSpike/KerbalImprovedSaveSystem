@@ -16,7 +16,7 @@ namespace KerbalImprovedSaveSystem
 
 		private FileOpCallback fileOperation;
 
-
+		private const string DialogTypeKeyBinding = "KeyBinding";
 
 		/// <summary>
 		/// Handles initialization of the dialog
@@ -81,6 +81,10 @@ namespace KerbalImprovedSaveSystem
 					case "Delete":
 						windowRect = GUI.ModalWindow(0, windowRect, DrawControls, "Delete existing save?", _dialogStyle);
 						break;
+
+					case DialogTypeKeyBinding:
+						windowRect = GUI.ModalWindow(0, windowRect, DrawControls, "Press a key/button!", _dialogStyle);
+						break;
 				}
 			}
 		}
@@ -92,8 +96,14 @@ namespace KerbalImprovedSaveSystem
 		/// <param name="windowId">Window identifier.</param>
 		private void DrawControls(int windowId)
 		{
-			GUILayout.BeginVertical();
-			GUILayout.Label("'" + existingSave + "'", GUILayout.ExpandWidth(true));
+			if (dialogType == DialogTypeKeyBinding)
+			{
+				GUILayout.Label("... waiting for input ...", GUILayout.ExpandWidth(true));
+			}
+			else
+			{
+				GUILayout.BeginVertical();
+				GUILayout.Label("'" + existingSave + "'", GUILayout.ExpandWidth(true));
 
 			GUILayout.BeginHorizontal();
 			GUILayout.FlexibleSpace(); // moves the following buttons to the right
@@ -113,11 +123,12 @@ namespace KerbalImprovedSaveSystem
 
 			GUILayout.EndVertical();
 		}
+		}
 
 		/// <summary>
 		/// Resets and hides the dialog;
 		/// </summary>
-		private void Hide()
+		internal void Hide()
 		{
 			fileOperation = null;
 			dialogType = string.Empty;
@@ -138,6 +149,15 @@ namespace KerbalImprovedSaveSystem
 			dialogType = opType;
 			isVisible = true;
 			fileOperation = fileOp;
+		}
+
+		/// <summary>
+		/// Shows a "waiting for user input" dialog until a key/button is pressed.
+		/// </summary>
+		internal void PromptKeybindingInput()
+		{
+			dialogType = DialogTypeKeyBinding;
+			isVisible = true;
 		}
 	}
 }

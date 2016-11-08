@@ -27,7 +27,8 @@ namespace KerbalImprovedSaveSystem
 		private bool _isVisible;
 		private KISSDialog _kissDialog;
 		private string _kissTooltip;
-		private GUIStyle _windowStyle, _labelStyle, _buttonStyle, _altBtnStyle, _delBtnStyle, _listBtnStyle, _listSelectionStyle, _txtFieldStyle, _listStyle, _toggleStyle, _selectionGridSytle, _tooltipWindowStyle, _tooltipLblStyle;
+		private GUIStyle _windowStyle, _labelStyle, _whiteLblStyle, _buttonStyle, _altBtnStyle, _delBtnStyle, _listBtnStyle,
+			_listSelectionStyle, _txtFieldStyle, _listStyle, _toggleStyle, _selectionGridSytle, _tooltipWindowStyle, _tooltipLblStyle;
 		private Texture2D _settingsTexture;
 		private bool _hasInitStyles;
 		// scroll position in the list of existing savegames
@@ -54,7 +55,7 @@ namespace KerbalImprovedSaveSystem
 		private int selectedDfltSaveName;
 		private GUIContent[] slctnGridContent;
 
-		// flags to configure behaviour
+		// flags  and variables to configure behaviour
 
 		// enable/disable overwrite confirmations
 		private bool confirmOverwrite = false;
@@ -66,8 +67,12 @@ namespace KerbalImprovedSaveSystem
 		private bool reverseOrder = false;
 		// enable/disable quicksave mode (quicksave without showing gui)
 		private bool quickSaveMode = false;
-
-
+		// enable/disable detection of pressed key for changing keybinding for KISS
+		private bool bDetectKey = false;
+		// holds the currently used keybinding for KISS
+		private KeyCode kissKeyCode;
+		private char kissKeyChar;
+		private String kissKeyCaption;
 
 		/// <summary>
 		/// Handles initialization of the plugin
@@ -94,8 +99,8 @@ namespace KerbalImprovedSaveSystem
 		{
 			if (!_isVisible)
 			{
-				// show window on F8
-				if (Input.GetKey(KeyCode.F8)) //GameSettings.QUICKSAVE.GetKey() && GameSettings.MODIFIER_KEY.GetKey())
+				// show window on keypress (default key = F8)
+				if (Input.GetKey(kissKeyCode)) //GameSettings.QUICKSAVE.GetKey() && GameSettings.MODIFIER_KEY.GetKey())
 				{
 					// pause game and acquire save directory and filename
 					FlightDriver.SetPause(true);
@@ -125,6 +130,10 @@ namespace KerbalImprovedSaveSystem
 			}
 			else // if visible...
 			{
+				// detect the key being pressed when user changes the hotkey for KISS.
+				if (bDetectKey)
+					DetectInput();
+
 				// detect double clicks
 				if (Input.GetMouseButtonDown(0))
 				{
@@ -154,6 +163,75 @@ namespace KerbalImprovedSaveSystem
 					if (selectedFileName != "" && !_kissDialog.isVisible && !(Event.current.type == EventType.Used))
 					{
 						ConfirmFileOp(confirmOverwrite && existingSaveGames.Contains(selectedFileName), "Overwrite", selectedFileName, Save);
+					}
+				}
+			}
+		}
+
+		/// <summary>
+		/// Detects a key input to configure the KISS shortcuts.
+		/// To be honest this method is a mess but I have not yet found a "proper" way of handling this.
+		/// </summary>
+		private void DetectInput()
+		{
+			KeyCode[] numKeys = {
+				KeyCode.Keypad0,
+				KeyCode.Keypad1,
+				KeyCode.Keypad2,
+				KeyCode.Keypad3,
+				KeyCode.Keypad4,
+				KeyCode.Keypad5,
+				KeyCode.Keypad6,
+				KeyCode.Keypad7,
+				KeyCode.Keypad8,
+				KeyCode.Keypad9,
+				KeyCode.KeypadDivide,
+				KeyCode.KeypadEquals,
+				KeyCode.KeypadMinus,
+				KeyCode.KeypadMultiply,
+				KeyCode.KeypadPlus,
+				KeyCode.KeypadPeriod
+			};
+
+			foreach (KeyCode vkey in System.Enum.GetValues(typeof(KeyCode)))
+			{
+				// do not alow the use of modifier keys, because that makes everything way more difficult
+				if (Input.GetKeyDown(vkey) && !Event.current.shift && !Event.current.control && !Event.current.alt && !Event.current.command)
+				{
+					// ignore ESC, Return, KeypadEnter and "modifier keys" (SHIFT, CTRL, ALT, Command (Mac))
+					if ((vkey != KeyCode.Return) && (vkey != KeyCode.Escape) && (vkey != KeyCode.KeypadEnter) &&
+						(vkey != KeyCode.LeftControl) && (vkey != KeyCode.RightControl) &&
+						(vkey != KeyCode.LeftAlt) && (vkey != KeyCode.RightAlt) && (vkey != KeyCode.AltGr) &&
+						(vkey != KeyCode.LeftCommand) && (vkey != KeyCode.RightCommand) &&
+						(vkey != KeyCode.LeftApple) && (vkey != KeyCode.RightApple) &&
+						(vkey != KeyCode.LeftWindows) && (vkey != KeyCode.RightWindows) &&
+						(vkey != KeyCode.LeftShift) && (vkey != KeyCode.RightShift))
+					{
+						kissKeyCode = vkey;
+						string teststr = Input.inputString;
+						Boolean isFuncKey = Event.current.functionKey;
+						kissKeyChar = Event.current.character;
+						// handle special cases like keys for characters that combine with others like "´" or "^"
+						// but ignore the "Pause" key, as that will be handled correctly further below
+						if ((kissKeyChar == '\0') && (!isFuncKey) && (vkey != KeyCode.Pause))
+						{
+							// ignore this key, so user has to press it again (like accents on german keyboard) or press another key.
+							continue;
+						}
+						if ((kissKeyChar == '\0') || (numKeys.IndexOf(vkey) > -1) || Char.IsDigit(kissKeyChar) || Char.IsWhiteSpace(kissKeyChar))
+							kissKeyCaption = Enum.GetName(typeof(KeyCode), kissKeyCode);
+						else
+							kissKeyCaption = (kissKeyChar + "").ToUpper();
+
+						// stop detection of key input
+						bDetectKey = false;
+
+						// make sure nothing else is activated by this keypress
+						Event.current.Use();
+						Event.current.keyCode = KeyCode.None;
+						Event.current.character = '\0';
+
+						_kissDialog.Hide();
 					}
 				}
 			}
@@ -322,8 +400,22 @@ namespace KerbalImprovedSaveSystem
 				selectedDfltSaveName = GUILayout.SelectionGrid(selectedDfltSaveName, slctnGridContent, 1, _selectionGridSytle, GUILayout.ExpandWidth(true));
 
 				GUILayout.Space(10); // moves the following label down
+				GUILayout.Label("Keybinding:", _labelStyle);
+				GUILayout.BeginHorizontal(); // keybindings
+				GUILayout.Label("Open KISS:", _whiteLblStyle);
+				//GUILayout.Space(10); // moves the following item to the right
+				if (GUILayout.Button(new GUIContent(kissKeyCaption, "Click button to change key."), _buttonStyle))
+				{
+					// show overlay/dialog promting to press a key/button
+					_kissDialog.parentWindow = _windowPosSize; //update position of main window
+					_kissDialog.PromptKeybindingInput();
+					bDetectKey = true;
+				}
+				GUILayout.EndHorizontal(); // end of keybindings
+
+				GUILayout.Space(10); // moves the following label down
 				GUILayout.Label("Remember this option!", _labelStyle);
-				quickSaveMode = GUILayout.Toggle(quickSaveMode, new GUIContent("Quicksave mode (no GUI)", "If enabled, pressing F8 will directly save the game using the current filename settings. Ignores \"Confirm overwrite\" setting. Press MOD + F8 to show KISS window again."), _toggleStyle);
+				quickSaveMode = GUILayout.Toggle(quickSaveMode, new GUIContent("Quicksave mode (no GUI)", "If enabled, pressing > " + kissKeyCaption + " < will directly save the game using the current filename settings. Ignores \"Confirm overwrite\" setting. Press MOD + " + kissKeyCaption + " to show KISS window again."), _toggleStyle);
 
 
 				GUILayout.EndVertical(); // end of settings area
@@ -349,6 +441,11 @@ namespace KerbalImprovedSaveSystem
 		/// </summary>
 		private void InitSettings()
 		{
+			// default keycode for kiss
+			kissKeyCode = KeyCode.F8;
+			kissKeyChar = ' ';
+			kissKeyCaption = "F8";
+
 			_windowPosSize = new Rect(0, 0, 400, 500);
 			_isVisible = false;
 			_hasInitStyles = false;
@@ -368,6 +465,8 @@ namespace KerbalImprovedSaveSystem
 			reverseOrder = config.GetValue<bool>("reverseOrder", false);
 			selectedDfltSaveName = config.GetValue<int>("selectedDfltSaveNameInt", 0);
 			quickSaveMode = config.GetValue<bool>("quickSaveMode", false);
+			kissKeyCode = config.GetValue<KeyCode>("kissKeyCode", KeyCode.F8);
+			kissKeyCaption = config.GetValue<string>("kissKeyCaption", "F8");
 		}
 
 
@@ -395,6 +494,12 @@ namespace KerbalImprovedSaveSystem
 
 			_labelStyle = new GUIStyle(HighLogic.Skin.label);
 			_labelStyle.stretchWidth = true;
+
+			_whiteLblStyle = new GUIStyle(HighLogic.Skin.label);
+			//_whiteLblStyle.stretchWidth = true;
+			_whiteLblStyle.normal.textColor = Color.white;
+			_whiteLblStyle.hover.textColor = Color.white;
+			_whiteLblStyle.active.textColor = Color.white;
 
 			_buttonStyle = new GUIStyle(HighLogic.Skin.button);
 
@@ -577,6 +682,8 @@ namespace KerbalImprovedSaveSystem
 			config.SetValue("reverseOrder", reverseOrder);
 			config.SetValue("selectedDfltSaveNameInt", selectedDfltSaveName);
 			config.SetValue("quickSaveMode", quickSaveMode);
+			config.SetValue("kissKeyCode", kissKeyCode);
+			config.SetValue("kissKeyCaption", kissKeyCaption);
 
 			config.save();
 
