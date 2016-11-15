@@ -23,17 +23,17 @@ namespace KerbalImprovedSaveSystem
 		public const string modLogTag = "[KISS]: ";
 
 		// stuff to configure the GUI
-		private Rect _windowPosSize;
-		private bool _isVisible;
+		private Rect windowPosSize;
+		private bool isVisible;
 		private KISSDialog _kissDialog;
-		private string _kissTooltip;
+		private string kissTooltip;
 		private GUIStyle _windowStyle, _labelStyle, _whiteLblStyle, _buttonStyle, _altBtnStyle, _delBtnStyle, _listBtnStyle,
 			_listSelectionStyle, _txtFieldStyle, _listStyle, _toggleStyle, _selectionGridSytle, _tooltipWindowStyle, _tooltipLblStyle;
 		private Texture2D _settingsTexture;
-		private bool _hasInitStyles;
+		private bool hasInitStyles;
 		// scroll position in the list of existing savegames
-		private Vector2 _scrollPos;
-		private bool _showSettings;
+		private Vector2 scrollPos;
+		private bool showSettings;
 
 		// stuff to detect double clicks
 		private bool dblClicked;
@@ -71,7 +71,6 @@ namespace KerbalImprovedSaveSystem
 		private bool bDetectKey = false;
 		// holds the currently used keybinding for KISS
 		private KeyCode kissKeyCode;
-		private char kissKeyChar;
 		private String kissKeyCaption;
 
 		/// <summary>
@@ -97,7 +96,7 @@ namespace KerbalImprovedSaveSystem
 		/// </summary>
 		void Update()
 		{
-			if (!_isVisible)
+			if (!isVisible)
 			{
 				// show window on keypress (default key = F8)
 				if (Input.GetKey(kissKeyCode)) //GameSettings.QUICKSAVE.GetKey() && GameSettings.MODIFIER_KEY.GetKey())
@@ -111,13 +110,13 @@ namespace KerbalImprovedSaveSystem
 					// launch GUI when not in quicksave mode or when modifier key is pressed (default: ALT)
 					if (!quickSaveMode || GameSettings.MODIFIER_KEY.GetKey())
 					{
-						if (!_hasInitStyles)
+						if (!hasInitStyles)
 						{
 							Debug.Log(modLogTag + "Init GUI.");
 							InitStyles();
 						}
 
-						_isVisible = true;
+						isVisible = true;
 					}
 					else
 					{
@@ -209,8 +208,9 @@ namespace KerbalImprovedSaveSystem
 						(vkey != KeyCode.LeftShift) && (vkey != KeyCode.RightShift))
 					{
 						kissKeyCode = vkey;
-						string teststr = Input.inputString;
+						//string teststr = Input.inputString;
 						Boolean isFuncKey = Event.current.functionKey;
+						char kissKeyChar = ' ';
 						kissKeyChar = Event.current.character;
 						// handle special cases like keys for characters that combine with others like "´" or "^"
 						// but ignore the "Pause" key, as that will be handled correctly further below
@@ -244,7 +244,7 @@ namespace KerbalImprovedSaveSystem
 		/// </summary>
 		private void OnGUI()
 		{
-			if (_isVisible)
+			if (isVisible)
 			{
 				OnDraw();
 			}
@@ -256,23 +256,23 @@ namespace KerbalImprovedSaveSystem
 		/// </summary>
 		private void OnDraw()
 		{
-			if (_showSettings)
+			if (showSettings)
 			{
-				_windowPosSize.width = 600;
+				windowPosSize.width = 600;
 			}
 			else
 			{
-				_windowPosSize.width = 400;
+				windowPosSize.width = 400;
 			}
 
-			_windowPosSize = GUILayout.Window(this.GetInstanceID(), _windowPosSize, DrawControls, "Kerbal Improved Save System", _windowStyle);
+			windowPosSize = GUILayout.Window(this.GetInstanceID(), windowPosSize, DrawControls, "Kerbal Improved Save System", _windowStyle);
 
 			// handle display of tooltip
-			if (!string.IsNullOrEmpty(_kissTooltip))
+			if (!string.IsNullOrEmpty(kissTooltip))
 			{
 				// This code is partially borrowed from "[x] Science!" Mod:
 				// calculate required height of the label for the given text and width
-				float boxHeight = _tooltipLblStyle.CalcHeight(new GUIContent(_kissTooltip), 190);
+				float boxHeight = _tooltipLblStyle.CalcHeight(new GUIContent(kissTooltip), 190);
 				Rect tooltipPosSize = new Rect(Mouse.screenPos.x + 15, Mouse.screenPos.y + 15, 194, boxHeight + 4);
 				// Move tooltip left and/or above of cursor if it would be outside of screen
 				if ((tooltipPosSize.x + 15 + tooltipPosSize.width) > Screen.width)
@@ -282,7 +282,7 @@ namespace KerbalImprovedSaveSystem
 				// create window and declare window function inside arguments of constructor
 				GUI.Window(1, tooltipPosSize, x =>
 				{
-					GUI.Label(new Rect(2, 2, 190, boxHeight), _kissTooltip, _tooltipLblStyle);
+					GUI.Label(new Rect(2, 2, 190, boxHeight), kissTooltip, _tooltipLblStyle);
 				}, string.Empty, _tooltipWindowStyle);
 			}
 		}
@@ -307,13 +307,13 @@ namespace KerbalImprovedSaveSystem
 			GUILayout.FlexibleSpace(); // moves the following button to the right
 			if (GUILayout.Button(new GUIContent(_settingsTexture, "Toggle Options"), _buttonStyle))
 			{
-				_showSettings = !_showSettings;
+				showSettings = !showSettings;
 			}
 			GUILayout.EndHorizontal(); // END area above file list
 
 			GUILayout.Space(6);
 
-			_scrollPos = GUILayout.BeginScrollView(_scrollPos, _listStyle);
+			scrollPos = GUILayout.BeginScrollView(scrollPos, _listStyle);
 			int i = 0;
 			if (existingSaveGames == null)
 				Debug.Log(modLogTag + "No existing savegames found.");
@@ -385,7 +385,7 @@ namespace KerbalImprovedSaveSystem
 
 			GUILayout.EndVertical(); // end of main KISS dialog
 
-			if (_showSettings)
+			if (showSettings)
 			{
 				GUILayout.BeginVertical(); // start of settings area
 				GUILayout.Space(10); // moves the following label down
@@ -408,7 +408,7 @@ namespace KerbalImprovedSaveSystem
 				if (GUILayout.Button(new GUIContent(kissKeyCaption, "Click button to change key."), _buttonStyle))
 				{
 					// show overlay/dialog promting to press a key/button
-					_kissDialog.parentWindow = _windowPosSize; //update position of main window
+					_kissDialog.parentWindow = windowPosSize; //update position of main window
 					_kissDialog.PromptKeybindingInput();
 					bDetectKey = true;
 				}
@@ -426,13 +426,13 @@ namespace KerbalImprovedSaveSystem
 
 			GUI.DragWindow();
 
-			_kissTooltip = GUI.tooltip;
+			kissTooltip = GUI.tooltip;
 			// This code (and comment) is borrowed from "[x] Science!" mod:
 			// If this window gets focus, it pushes the tooltip behind the window, which looks weird.
 			// Just hide the tooltip while mouse buttons are held down to avoid this.
 			if (Input.GetMouseButton(0) || Input.GetMouseButton(1) || Input.GetMouseButton(2))
 			{
-				_kissTooltip = string.Empty;
+				kissTooltip = string.Empty;
 			}
 		}
 
@@ -444,22 +444,21 @@ namespace KerbalImprovedSaveSystem
 		{
 			// default keycode for kiss
 			kissKeyCode = KeyCode.F8;
-			kissKeyChar = ' ';
 			kissKeyCaption = "F8";
 
-			_windowPosSize = new Rect(0, 0, 400, 500);
-			_isVisible = false;
-			_hasInitStyles = false;
+			windowPosSize = new Rect(0, 0, 400, 500);
+			isVisible = false;
+			hasInitStyles = false;
 
-			_showSettings = false;
-			_kissTooltip = string.Empty;
+			showSettings = false;
+			kissTooltip = string.Empty;
 			dblClicked = false;
 			selectedFileName = string.Empty;
 
 			config = PluginConfiguration.CreateForType<KerbalImprovedSaveSystem>();
 			config.load();
 
-			_windowPosSize = config.GetValue<Rect>("Window Position", _windowPosSize.CenterScreen());
+			windowPosSize = config.GetValue<Rect>("Window Position", windowPosSize.CenterScreen());
 			confirmOverwrite = config.GetValue<bool>("confirmOverwrite", false);
 			confirmDelete = config.GetValue<bool>("confirmDelete", true);
 			useGameTime = config.GetValue<bool>("useGameTime", false);
@@ -549,7 +548,7 @@ namespace KerbalImprovedSaveSystem
 			_tooltipLblStyle.stretchHeight = true;
 			_tooltipLblStyle.padding = new RectOffset(2, 2, 2, 2);
 
-			_hasInitStyles = true;
+			hasInitStyles = true;
 
 			Debug.Log(modLogTag + "GUI styles initialised.");
 		}
@@ -624,7 +623,7 @@ namespace KerbalImprovedSaveSystem
 		{
 			if (confirmRequired)
 			{
-				_kissDialog.parentWindow = _windowPosSize; //update position of main window
+				_kissDialog.parentWindow = windowPosSize; //update position of main window
 				_kissDialog.ConfirmFileOp(opType, selectedFileName, fileOp);
 			}
 			else
@@ -676,7 +675,7 @@ namespace KerbalImprovedSaveSystem
 		private void Close(string reason)
 		{
 			// save window position and current settings into config file
-			config.SetValue("Window Position", _windowPosSize);
+			config.SetValue("Window Position", windowPosSize);
 			config.SetValue("confirmOverwrite", confirmOverwrite);
 			config.SetValue("confirmDelete", confirmDelete);
 			config.SetValue("useGameTime", useGameTime);
@@ -689,7 +688,7 @@ namespace KerbalImprovedSaveSystem
 			config.save();
 
 			// code to remove window from UI
-			_isVisible = false;
+			isVisible = false;
 			Debug.Log(modLogTag + reason);
 			FlightDriver.SetPause(false);
 		}
