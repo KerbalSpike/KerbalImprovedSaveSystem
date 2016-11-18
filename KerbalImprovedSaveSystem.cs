@@ -8,9 +8,9 @@ using UnityEngine;
 namespace KerbalImprovedSaveSystem
 {
 	/// <summary>
-	/// Delegate to execute file operations depending of dialog result (yes/no).
+	/// Used to execute file operations depending of dialog result (yes/no).
 	/// </summary>
-	/// <param name="filename"></param>
+	/// <param name="filename">The name of the file to be modified.</param>
 	internal delegate void FileOpCallback(string filename);
 
 	/// <summary>
@@ -208,7 +208,6 @@ namespace KerbalImprovedSaveSystem
 						(vkey != KeyCode.LeftShift) && (vkey != KeyCode.RightShift))
 					{
 						kissKeyCode = vkey;
-						//string teststr = Input.inputString;
 						Boolean isFuncKey = Event.current.functionKey;
 						char kissKeyChar = ' ';
 						kissKeyChar = Event.current.character;
@@ -256,6 +255,7 @@ namespace KerbalImprovedSaveSystem
 		/// </summary>
 		private void OnDraw()
 		{
+			// resize window to show settings panel
 			if (showSettings)
 			{
 				windowPosSize.width = 600;
@@ -265,6 +265,7 @@ namespace KerbalImprovedSaveSystem
 				windowPosSize.width = 400;
 			}
 
+			// create window
 			windowPosSize = GUILayout.Window(this.GetInstanceID(), windowPosSize, DrawControls, "Kerbal Improved Save System", _windowStyle);
 
 			// handle display of tooltip
@@ -319,6 +320,7 @@ namespace KerbalImprovedSaveSystem
 				Debug.Log(modLogTag + "No existing savegames found.");
 			else
 			{
+				// create a Button inside this ScrollView for every existing savegame.
 				for (; i < existingSaveGames.Count; i++)
 				{
 					// code for only rendering currently visible elements in scrollView, 
@@ -496,7 +498,6 @@ namespace KerbalImprovedSaveSystem
 			_labelStyle.stretchWidth = true;
 
 			_whiteLblStyle = new GUIStyle(HighLogic.Skin.label);
-			//_whiteLblStyle.stretchWidth = true;
 			_whiteLblStyle.normal.textColor = Color.white;
 			_whiteLblStyle.hover.textColor = Color.white;
 			_whiteLblStyle.active.textColor = Color.white;
@@ -557,7 +558,7 @@ namespace KerbalImprovedSaveSystem
 		/// <summary>
 		/// Gets the existing savegame filenames (*.sfs) in the specified directory WITHOUT the 
 		/// special "persistent.sfs" file (that is special in KSP and will be overwritten
-		/// every time a savegame is loaded anyway).
+		/// every time another savegame is loaded anyway).
 		/// </summary>
 		/// <returns>List of existing savegames without their paths and extensions.</returns>
 		/// <param name="saveDir">Directory to search.</param>
@@ -613,7 +614,7 @@ namespace KerbalImprovedSaveSystem
 
 
 		/// <summary>
-		/// Gets permission to perform some kind of operation on a file.
+		/// Gets permission to perform some operation on a file, like deleting or overwriting.
 		/// </summary>
 		/// <param name="confirmRequired">If confirmation is disabled, the operation is performed directly.</param>
 		/// <param name="opType">Type of file operation. Currently available: "Delete" and "Save".</param>
