@@ -173,12 +173,10 @@ namespace KerbalImprovedSaveSystem
 		/// </summary>
 		private void DetectInput()
 		{
-			
-
 			// check for every possible key if it was pressed.
 			foreach (KeyCode vkey in System.Enum.GetValues(typeof(KeyCode)))
 			{
-				// do not alow the use of modifier keys, because that makes everything way more difficult
+				// do not allow the use of modifier keys, because that makes everything way more difficult
 				if (Input.GetKeyDown(vkey) && !Event.current.shift && !Event.current.capsLock && 
 					!Event.current.control && !Event.current.alt && !Event.current.command)
 				{
@@ -193,6 +191,7 @@ namespace KerbalImprovedSaveSystem
 					{
 						kissKeyCode = vkey;
 						Boolean isFuncKey = Event.current.functionKey;
+						Event.current.capsLock = false;
 						char kissKeyChar = ' ';
 						kissKeyChar = Event.current.character;
 						// handle special cases like keys for characters that combine with others like "´" or "^"
@@ -202,6 +201,7 @@ namespace KerbalImprovedSaveSystem
 							// ignore this key, so user has to press it again (like accents on german keyboard) or press another key.
 							continue;
 						}
+						// set the label for the new key either as the character or its name.
 						if ((kissKeyChar == '\0') || isNumKey(vkey) || Char.IsDigit(kissKeyChar) || Char.IsWhiteSpace(kissKeyChar))
 							kissKeyCaption = Enum.GetName(typeof(KeyCode), kissKeyCode);
 						else
@@ -222,8 +222,10 @@ namespace KerbalImprovedSaveSystem
 		}
 
 		/// <summary>
-		/// Check if the pressed key was on the numeric keyboard to always 
-		/// label them with their Keypad name regardless of current NumLock state.
+		/// Check if the pressed key was on the numeric keyboard to 
+		/// label them with their Keypad name.
+		/// Unfortunately keypad number keys are not detected when
+		/// Numlock is off, then they register as arrow keys etc. .
 		/// </summary>
 		/// <param name="vkey">The key that has been pressed.</param>
 		/// <returns>True - if vkey is on the numeric keyboard.
@@ -248,7 +250,6 @@ namespace KerbalImprovedSaveSystem
 			return (numKeys.IndexOf(vkey) > -1);
 		}
 
-
 		/// <summary>
 		/// Called by Unity to draw the GUI - can be called many times per frame.
 		/// </summary>
@@ -259,7 +260,6 @@ namespace KerbalImprovedSaveSystem
 				OnDraw();
 			}
 		}
-
 
 		/// <summary>
 		/// Handles window positioning and tooltip overlay.
