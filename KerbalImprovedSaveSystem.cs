@@ -173,25 +173,9 @@ namespace KerbalImprovedSaveSystem
 		/// </summary>
 		private void DetectInput()
 		{
-			KeyCode[] numKeys = {
-				KeyCode.Keypad0,
-				KeyCode.Keypad1,
-				KeyCode.Keypad2,
-				KeyCode.Keypad3,
-				KeyCode.Keypad4,
-				KeyCode.Keypad5,
-				KeyCode.Keypad6,
-				KeyCode.Keypad7,
-				KeyCode.Keypad8,
-				KeyCode.Keypad9,
-				KeyCode.KeypadDivide,
-				KeyCode.KeypadEquals,
-				KeyCode.KeypadMinus,
-				KeyCode.KeypadMultiply,
-				KeyCode.KeypadPlus,
-				KeyCode.KeypadPeriod
-			};
+			
 
+			// check for every possible key if it was pressed.
 			foreach (KeyCode vkey in System.Enum.GetValues(typeof(KeyCode)))
 			{
 				// do not alow the use of modifier keys, because that makes everything way more difficult
@@ -218,7 +202,7 @@ namespace KerbalImprovedSaveSystem
 							// ignore this key, so user has to press it again (like accents on german keyboard) or press another key.
 							continue;
 						}
-						if ((kissKeyChar == '\0') || (numKeys.IndexOf(vkey) > -1) || Char.IsDigit(kissKeyChar) || Char.IsWhiteSpace(kissKeyChar))
+						if ((kissKeyChar == '\0') || isNumKey(vkey) || Char.IsDigit(kissKeyChar) || Char.IsWhiteSpace(kissKeyChar))
 							kissKeyCaption = Enum.GetName(typeof(KeyCode), kissKeyCode);
 						else
 							kissKeyCaption = (kissKeyChar + "").ToUpper();
@@ -235,6 +219,33 @@ namespace KerbalImprovedSaveSystem
 					}
 				}
 			}
+		}
+
+		/// <summary>
+		/// Check if the pressed key was on the numeric keyboard to always 
+		/// label them with their Keypad name regardless of current NumLock state.
+		/// </summary>
+		/// <param name="vkey">The key that has been pressed.</param>
+		/// <returns>True - if vkey is on the numeric keyboard.
+		/// False - for all other keys.</returns>
+		private bool isNumKey(KeyCode vkey)
+		{
+			// array of all the Keypad Keycodes.
+			KeyCode[] numKeys = {KeyCode.Keypad0,
+				KeyCode.Keypad1, KeyCode.Keypad2, KeyCode.Keypad3,
+				KeyCode.Keypad4, KeyCode.Keypad5, KeyCode.Keypad6,
+				KeyCode.Keypad7, KeyCode.Keypad8, KeyCode.Keypad9,
+				KeyCode.KeypadDivide,
+				KeyCode.KeypadMultiply,
+				KeyCode.KeypadMinus,
+				KeyCode.KeypadPlus,
+				KeyCode.KeypadPeriod,
+				KeyCode.KeypadEquals,
+				KeyCode.KeypadEnter,
+				KeyCode.Numlock
+			};
+
+			return (numKeys.IndexOf(vkey) > -1);
 		}
 
 
