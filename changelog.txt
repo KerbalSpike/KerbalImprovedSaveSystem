@@ -1,7 +1,12 @@
 KISS version history
 ====================
 
-2.1.0, 2016-11-08
+2.1.0, 2016-11-18
+	Fixed:		Ignore keys while Capslock is on, otherwise labeling them correctly becomes even more difficult.
+	Changed:	A few minor tweaks under the hood (cleaned up some code segments and comments).
+	
+	
+2.1.0-beta1, 2016-11-08
 	Added:		Made keyboard shortcut configurable.
 	
 	
