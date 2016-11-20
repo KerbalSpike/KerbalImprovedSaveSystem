@@ -30,7 +30,7 @@ for Kerbal Space Program 1.2.1 (also compatible with 1.2.0 and 1.1.3)
 
 
 See [changelog.txt] (https://github.com/KerbalSpike/KerbalImprovedSaveSystem/blob/develop/changelog.txt) for list of changes.  
-Visit the [Forum Thread] (http://forum.kerbalspaceprogram.com/index.php?/topic/138001-113-kiss-kerbal-improved-save-system/) to tell me what you think about KISS or report errors.
+Visit the [Forum Thread] (http://forum.kerbalspaceprogram.com/index.php?/topic/138001-113-kiss-kerbal-improved-save-system/) to tell me what you think about KISS or report errors.  
 Download KISS on [SpaceDock] (http://spacedock.info/mod/583/Kerbal%20Improved%20Save%20System)
 
 #### Planned updates ("soon" :tm: ): ####
