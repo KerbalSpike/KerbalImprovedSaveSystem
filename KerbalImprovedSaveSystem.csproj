@@ -119,7 +119,8 @@ xcopy "$(TargetDir)..\*.*" "D:\Projects\KSP_mods\Kerbal Space Program 1.1.0\Game
 xcopy "$(TargetDir)..\*.*" "D:\Projects\KSP_mods\Kerbal Space Program 1.1.3\GameData\$(ProjectName)\" /D /E /C /R /I /K /Y</PostBuildEvent>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release KSP 1.2.1|AnyCPU' ">
-    <PreBuildEvent>del /F /S /Q "$(TargetDir)*.*"</PreBuildEvent>
+    <PreBuildEvent>del /F /S /Q "$(TargetDir)*.*"
+del /F /S /Q "D:\Projects\KSP_mods\Kerbal Space Program 1.2.1\GameData\$(ProjectName)\*.*"</PreBuildEvent>
     <PostBuildEvent>xcopy "$(ProjectDir)icons\*.*" "$(TargetDir)..\icons" /D /E /C /R /I /K /Y
 xcopy "$(TargetDir)..\*.*" "D:\Projects\KSP_mods\Kerbal Space Program 1.2.1\GameData\$(ProjectName)\" /D /E /C /R /I /K /Y</PostBuildEvent>
   </PropertyGroup>
