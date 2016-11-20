@@ -19,8 +19,8 @@ the stock "Quicksave as..." dialog (*"MOD"+"F5"*) for creating named savegames. 
 In other words: **KISS** allows you to manage your quicksaves without the need to memorize quicksave names!
 
 #### Known limitations of the keybinding feature: ####
-* you **can't** use any modifier keys (Shift, Ctrl, Alt, Command,...) and you also **can't** have any key combinations for KISS, you can only pick a simple, single key.
-* you have to disable Capslock before assigning a new key if you want to make sure it is labeled correctly in the UI.
+* you **can't** bind any modifier keys (Shift, Ctrl, Alt, Command,...) and you also **can't** have any key combinations for KISS, you can only pick a simple, single key.
+* you have to disable Capslock before assigning a new key if you want to make sure it is labeled correctly in the UI. Unfortunately it is currently impossible in Unity to check if Capslock is on.
 * on international keyboards, you have to hit special keys twice(like the accent keys " ´ " and " ^ " on the German keyboard), because they do not produce a character when hit for the first time, but I need the character to label the key correctly.
 * all keys that to not produce characters like Backspace, Arrow Keys, etc. are labeled with their English names, regardless of keyboard language used.
 * the "Print" key is for some reason not detected by my code (although it is listed as a viable KeyCode in Unity).
@@ -31,7 +31,7 @@ for Kerbal Space Program 1.2.1 (also compatible with 1.2.0 and 1.1.3)
 
 See [changelog.txt] (https://github.com/KerbalSpike/KerbalImprovedSaveSystem/blob/develop/changelog.txt) for list of changes.  
 Visit the [Forum Thread] (http://forum.kerbalspaceprogram.com/index.php?/topic/138001-113-kiss-kerbal-improved-save-system/) to tell me what you think about KISS or report errors.  
-Download KISS on [SpaceDock] (http://spacedock.info/mod/583/Kerbal%20Improved%20Save%20System)
+Download KISS on [SpaceDock] (http://spacedock.info/mod/583/Kerbal%20Improved%20Save%20System).
 
 #### Planned updates ("soon" :tm: ): ####
 * make KISS also available in the space center.

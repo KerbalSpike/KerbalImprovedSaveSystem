@@ -106,6 +106,8 @@
     </MonoDevelop>
   </ProjectExtensions>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug KSP 1.2.1|AnyCPU' ">
+	<PreBuildEvent>del /F /S /Q "$(TargetDir)*.*"
+del /F /S /Q "D:\Projects\KSP_mods\Kerbal Space Program 1.2.1\GameData\$(ProjectName)\*.*"</PreBuildEvent>
 	<PostBuildEvent>"D:\Projects\KSP_mods\Tools\pdb2mdb\pdb2mdb.exe" "$(TargetFileName)"
 xcopy "$(ProjectDir)icons\*.*" "$(TargetDir)..\icons" /D /E /C /R /I /K /Y
 xcopy "$(TargetDir)..\*.*" "D:\Projects\KSP_mods\Kerbal Space Program 1.2.1\GameData\$(ProjectName)\" /D /E /C /R /I /K /Y</PostBuildEvent>

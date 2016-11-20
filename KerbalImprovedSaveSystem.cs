@@ -68,7 +68,7 @@ namespace KerbalImprovedSaveSystem
 		// enable/disable quicksave mode (quicksave without showing gui)
 		private bool quickSaveMode = false;
 		// enable/disable detection of pressed key for changing keybinding for KISS
-		private bool bDetectKey = false;
+		private bool detectingNewKey = false;
 		// holds the currently used keybinding for KISS
 		private KeyCode kissKeyCode;
 		private String kissKeyCaption;
@@ -125,28 +125,15 @@ namespace KerbalImprovedSaveSystem
 						Save(selectedFileName);
 					}
 				}
-
 			}
 			else // if visible...
 			{
-				// detect the key being pressed when user changes the hotkey for KISS.
-				if (bDetectKey)
-					DetectInput();
+				// find out if a doubleclick has happened
+				checkForDoubleClick();
 
-				// detect double clicks
-				if (Input.GetMouseButtonDown(0))
-				{
-					if (DateTime.Now - lastClickTime < catchTime)
-					{
-						dblClicked = true;
-					}
-					else
-					{
-						//normal click
-						dblClicked = false;
-					}
-					lastClickTime = DateTime.Now;
-				}
+				// detect the key being pressed when user changes the hotkey for KISS.
+				if (detectingNewKey && Event.current.isKey)
+					DetectInput();
 
 				// allow aborting window by pressing ESC, but only if _kissDialog is not visible
 				if ((Event.current.type == EventType.KeyUp) && (Event.current.keyCode == KeyCode.Escape)
@@ -164,6 +151,27 @@ namespace KerbalImprovedSaveSystem
 						ConfirmFileOp(confirmOverwrite && existingSaveGames.Contains(selectedFileName), "Overwrite", selectedFileName, Save);
 					}
 				}
+			}
+		}
+
+		/// <summary>
+		/// Determines if a doubleclick has happened.
+		/// </summary>
+		private void checkForDoubleClick()
+		{
+			// detect double clicks
+			if (Input.GetMouseButtonDown(0))
+			{
+				if (DateTime.Now - lastClickTime < catchTime)
+				{
+					dblClicked = true;
+				}
+				else
+				{
+					//normal click
+					dblClicked = false;
+				}
+				lastClickTime = DateTime.Now;
 			}
 		}
 
@@ -187,7 +195,7 @@ namespace KerbalImprovedSaveSystem
 						(vkey != KeyCode.LeftCommand) && (vkey != KeyCode.RightCommand) &&
 						(vkey != KeyCode.LeftApple) && (vkey != KeyCode.RightApple) &&
 						(vkey != KeyCode.LeftWindows) && (vkey != KeyCode.RightWindows) &&
-						(vkey != KeyCode.LeftShift) && (vkey != KeyCode.RightShift))
+						(vkey != KeyCode.LeftShift) && (vkey != KeyCode.RightShift) && (vkey != KeyCode.CapsLock))
 					{
 						kissKeyCode = vkey;
 						Boolean isFuncKey = Event.current.functionKey;
@@ -201,14 +209,14 @@ namespace KerbalImprovedSaveSystem
 							// ignore this key, so user has to press it again (like accents on german keyboard) or press another key.
 							continue;
 						}
-						// set the label for the new key either as the character or its name.
+						// set the label for the new key either as the character or its name (for function keys).
 						if ((kissKeyChar == '\0') || isNumKey(vkey) || Char.IsDigit(kissKeyChar) || Char.IsWhiteSpace(kissKeyChar))
 							kissKeyCaption = Enum.GetName(typeof(KeyCode), kissKeyCode);
 						else
 							kissKeyCaption = (kissKeyChar + "").ToUpper();
 
 						// stop detection of key input
-						bDetectKey = false;
+						detectingNewKey = false;
 
 						// make sure nothing else is activated by this keypress
 						Event.current.Use();
@@ -251,12 +259,16 @@ namespace KerbalImprovedSaveSystem
 		}
 
 		/// <summary>
-		/// Called by Unity to draw the GUI - can be called many times per frame.
+		/// Called by Unity to draw the GUI - can be called many times per frame
+		/// (once for every event), so event/input related stuff should go here?
+		/// Well no because some keyboard detection stuff doens't work when called
+		/// in here instead of in Update()
 		/// </summary>
 		private void OnGUI()
 		{
 			if (isVisible)
 			{
+				// finally do all the GUI drawing stuff
 				OnDraw();
 			}
 		}
@@ -423,7 +435,7 @@ namespace KerbalImprovedSaveSystem
 					// show overlay/dialog promting to press a key/button
 					_kissDialog.parentWindow = windowPosSize; //update position of main window
 					_kissDialog.PromptKeybindingInput();
-					bDetectKey = true;
+					detectingNewKey = true;
 				}
 				GUILayout.EndHorizontal(); // end of keybindings
 
