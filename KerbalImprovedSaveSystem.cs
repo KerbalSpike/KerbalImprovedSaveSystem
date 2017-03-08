@@ -16,7 +16,7 @@ namespace KerbalImprovedSaveSystem
 	/// <summary>
 	/// Start Kerbal Improved Save System when in a flight scene.
 	/// </summary>
-	[KSPAddon(KSPAddon.Startup.Flight, false)]
+	[KSPAddon(KSPAddon.Startup.FlightAndKSC, false)]
 	public class KerbalImprovedSaveSystem : MonoBehaviour
 	{
 		// used to identify log entries of this plugin
@@ -78,6 +78,8 @@ namespace KerbalImprovedSaveSystem
 		/// </summary>
 		void Start()
 		{
+			Debug.Log(modLogTag + "Starting ...");
+
 			_kissDialog = gameObject.AddComponent<KISSDialog>();
 
 			InitSettings();
@@ -88,6 +90,11 @@ namespace KerbalImprovedSaveSystem
 				new GUIContent("\"" + dfltSaveNames[1] + "\"","\"{Time}\" is replaced with either the current system or game time, \"{ActiveVessel}\" with the name of the current vessel."),
 				new GUIContent("\"" + dfltSaveNames[2] + "\"","Use this option if you want to use KISS to quicksave.")
 			};
+
+			Debug.Log(modLogTag + "Init GUI ...");
+			InitStyles();
+
+			Debug.Log(modLogTag + "Ready for action!");
 		}
 
 
@@ -110,11 +117,6 @@ namespace KerbalImprovedSaveSystem
 					// launch GUI when not in quicksave mode or when modifier key is pressed (default: ALT)
 					if (!quickSaveMode || GameSettings.MODIFIER_KEY.GetKey())
 					{
-						if (!hasInitStyles)
-						{
-							Debug.Log(modLogTag + "Init GUI.");
-							InitStyles();
-						}
 
 						isVisible = true;
 					}
@@ -185,7 +187,7 @@ namespace KerbalImprovedSaveSystem
 			foreach (KeyCode vkey in System.Enum.GetValues(typeof(KeyCode)))
 			{
 				// do not allow the use of modifier keys, because that makes everything way more difficult
-				if (Input.GetKeyDown(vkey) && !Event.current.shift && !Event.current.capsLock && 
+				if (Input.GetKeyDown(vkey) && !Event.current.shift && !Event.current.capsLock &&
 					!Event.current.control && !Event.current.alt && !Event.current.command)
 				{
 					// ignore ESC, Return, KeypadEnter and "modifier keys" (SHIFT, CTRL, ALT, Command (Mac))
@@ -630,7 +632,13 @@ namespace KerbalImprovedSaveSystem
 			}
 			else
 				result = result.Replace("{Time}", DateTime.Now.ToString("yyyyMMdd_HHmmss"));
-			result = result.Replace("{ActiveVessel}", FlightGlobals.ActiveVessel.vesselName);
+
+			// if ActiveVessel is null, we are probably at the space center
+			if (FlightGlobals.ActiveVessel == null)
+				result = result.Replace("{ActiveVessel}", "KSC");
+			else
+				result = result.Replace("{ActiveVessel}", FlightGlobals.ActiveVessel.vesselName);
+
 
 			return result;
 		}
