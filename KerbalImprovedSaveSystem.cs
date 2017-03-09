@@ -623,7 +623,7 @@ namespace KerbalImprovedSaveSystem
 			string result = dfltSaveNames[selectedDfltSaveName];
 			if (useGameTime)
 			{
-				//use planetarum universal time
+				// Use planetarium universal time
 				string timeStamp = KSPUtil.PrintDateCompact(Planetarium.GetUniversalTime(), true, true);
 				// PrintDateNew output has format "Y1, D01, 0:24:45"
 				// -> change to "Y1_D01_0_24_43"
@@ -633,9 +633,9 @@ namespace KerbalImprovedSaveSystem
 			else
 				result = result.Replace("{Time}", DateTime.Now.ToString("yyyyMMdd_HHmmss"));
 
-			// if ActiveVessel is null, we are probably at the space center
-			if (FlightGlobals.ActiveVessel == null)
-				result = result.Replace("{ActiveVessel}", "KSC");
+			// If we are at the space center, we can't access the name of the active vessel, as there simple is none.
+			if (HighLogic.LoadedScene == GameScenes.SPACECENTER)
+				result = result.Replace("{ActiveVessel}", "SpaceCenter");
 			else
 				result = result.Replace("{ActiveVessel}", FlightGlobals.ActiveVessel.vesselName);
 
@@ -685,13 +685,17 @@ namespace KerbalImprovedSaveSystem
 		/// <param name="selectedSaveFileName">File name to save the game into.</param>
 		private void Save(string selectedSaveFileName)
 		{
-			// first we need to acquire the current game status
+			// First we need to acquire the current game status
 			Game currentGame = HighLogic.CurrentGame.Updated();
-			// then we have to reset the startScene to flight, because calling Updated() sets it to space center.
-			currentGame.startScene = GameScenes.FLIGHT;
 
-			// now we can save it...
+			// If we are not at the space center, we have to reset the startScene to flight,
+			// because calling Updated() sets it to space center.
+			if (HighLogic.LoadedScene == GameScenes.FLIGHT)
+			{
+				currentGame.startScene = GameScenes.FLIGHT;
+			}
 
+			// Now we can save it
 			SaveMode s = SaveMode.OVERWRITE; // available SaveModes are: OVERWRITE, APPEND, ABORT
 			string filename = GamePersistence.SaveGame(currentGame, selectedSaveFileName, HighLogic.SaveFolder, s);
 			Debug.Log(modLogTag + "Game saved in '" + filename + "'");
