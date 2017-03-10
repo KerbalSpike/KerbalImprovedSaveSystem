@@ -30,7 +30,7 @@ namespace KerbalImprovedSaveSystem
 		private GUIStyle _windowStyle, _labelStyle, _whiteLblStyle, _buttonStyle, _altBtnStyle, _delBtnStyle, _listBtnStyle,
 			_listSelectionStyle, _txtFieldStyle, _listStyle, _toggleStyle, _selectionGridSytle, _tooltipWindowStyle, _tooltipLblStyle;
 		private Texture2D _settingsTexture;
-		private bool hasInitStyles;
+
 		// scroll position in the list of existing savegames
 		private Vector2 scrollPos;
 		private bool showSettings;
@@ -475,7 +475,6 @@ namespace KerbalImprovedSaveSystem
 
 			windowPosSize = new Rect(0, 0, 400, 500);
 			isVisible = false;
-			hasInitStyles = false;
 
 			showSettings = false;
 			kissTooltip = string.Empty;
@@ -573,8 +572,6 @@ namespace KerbalImprovedSaveSystem
 			_tooltipLblStyle.wordWrap = true;
 			_tooltipLblStyle.stretchHeight = true;
 			_tooltipLblStyle.padding = new RectOffset(2, 2, 2, 2);
-
-			hasInitStyles = true;
 
 			Debug.Log(modLogTag + "GUI styles initialised.");
 		}
