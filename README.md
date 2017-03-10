@@ -25,8 +25,8 @@ In other words: **KISS** allows you to manage your quicksaves without the need t
 * all keys that to not produce characters like Backspace, Arrow Keys, etc. are labeled with their English names, regardless of keyboard language used.
 * the "Print" key is for some reason not detected by my code (although it is listed as a viable KeyCode in Unity).
 
-### Current version: 2.1.0 ###
-for Kerbal Space Program 1.2.1 (also compatible with 1.2.0 and 1.1.3)
+### Current version: 2.2.0 ###
+for Kerbal Space Program 1.2.2 (also tested with 1.2.1)
 
 
 See [changelog.txt] (https://github.com/KerbalSpike/KerbalImprovedSaveSystem/blob/develop/changelog.txt) for list of changes.  
@@ -34,7 +34,7 @@ Visit the [Forum Thread] (http://forum.kerbalspaceprogram.com/index.php?/topic/1
 Download KISS on [SpaceDock] (http://spacedock.info/mod/583/Kerbal%20Improved%20Save%20System).
 
 #### Planned updates ("soon" :tm: ): ####
-* make KISS also available in the space center.
+* currently none
 
 #### Possible future extensions: ####
 * make KISS replace the stock quicksave entirely.

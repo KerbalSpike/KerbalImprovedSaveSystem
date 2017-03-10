@@ -16,7 +16,7 @@ namespace KerbalImprovedSaveSystem
 	/// <summary>
 	/// Start Kerbal Improved Save System when in a flight scene.
 	/// </summary>
-	[KSPAddon(KSPAddon.Startup.Flight, false)]
+	[KSPAddon(KSPAddon.Startup.FlightAndKSC, false)]
 	public class KerbalImprovedSaveSystem : MonoBehaviour
 	{
 		// used to identify log entries of this plugin
@@ -30,7 +30,7 @@ namespace KerbalImprovedSaveSystem
 		private GUIStyle _windowStyle, _labelStyle, _whiteLblStyle, _buttonStyle, _altBtnStyle, _delBtnStyle, _listBtnStyle,
 			_listSelectionStyle, _txtFieldStyle, _listStyle, _toggleStyle, _selectionGridSytle, _tooltipWindowStyle, _tooltipLblStyle;
 		private Texture2D _settingsTexture;
-		private bool hasInitStyles;
+
 		// scroll position in the list of existing savegames
 		private Vector2 scrollPos;
 		private bool showSettings;
@@ -78,6 +78,8 @@ namespace KerbalImprovedSaveSystem
 		/// </summary>
 		void Start()
 		{
+			Debug.Log(modLogTag + "Starting ...");
+
 			_kissDialog = gameObject.AddComponent<KISSDialog>();
 
 			InitSettings();
@@ -88,6 +90,11 @@ namespace KerbalImprovedSaveSystem
 				new GUIContent("\"" + dfltSaveNames[1] + "\"","\"{Time}\" is replaced with either the current system or game time, \"{ActiveVessel}\" with the name of the current vessel."),
 				new GUIContent("\"" + dfltSaveNames[2] + "\"","Use this option if you want to use KISS to quicksave.")
 			};
+
+			Debug.Log(modLogTag + "Init GUI ...");
+			InitStyles();
+
+			Debug.Log(modLogTag + "Ready for action!");
 		}
 
 
@@ -110,11 +117,6 @@ namespace KerbalImprovedSaveSystem
 					// launch GUI when not in quicksave mode or when modifier key is pressed (default: ALT)
 					if (!quickSaveMode || GameSettings.MODIFIER_KEY.GetKey())
 					{
-						if (!hasInitStyles)
-						{
-							Debug.Log(modLogTag + "Init GUI.");
-							InitStyles();
-						}
 
 						isVisible = true;
 					}
@@ -185,7 +187,7 @@ namespace KerbalImprovedSaveSystem
 			foreach (KeyCode vkey in System.Enum.GetValues(typeof(KeyCode)))
 			{
 				// do not allow the use of modifier keys, because that makes everything way more difficult
-				if (Input.GetKeyDown(vkey) && !Event.current.shift && !Event.current.capsLock && 
+				if (Input.GetKeyDown(vkey) && !Event.current.shift && !Event.current.capsLock &&
 					!Event.current.control && !Event.current.alt && !Event.current.command)
 				{
 					// ignore ESC, Return, KeypadEnter and "modifier keys" (SHIFT, CTRL, ALT, Command (Mac))
@@ -473,7 +475,6 @@ namespace KerbalImprovedSaveSystem
 
 			windowPosSize = new Rect(0, 0, 400, 500);
 			isVisible = false;
-			hasInitStyles = false;
 
 			showSettings = false;
 			kissTooltip = string.Empty;
@@ -572,8 +573,6 @@ namespace KerbalImprovedSaveSystem
 			_tooltipLblStyle.stretchHeight = true;
 			_tooltipLblStyle.padding = new RectOffset(2, 2, 2, 2);
 
-			hasInitStyles = true;
-
 			Debug.Log(modLogTag + "GUI styles initialised.");
 		}
 
@@ -621,7 +620,7 @@ namespace KerbalImprovedSaveSystem
 			string result = dfltSaveNames[selectedDfltSaveName];
 			if (useGameTime)
 			{
-				//use planetarum universal time
+				// Use planetarium universal time
 				string timeStamp = KSPUtil.PrintDateCompact(Planetarium.GetUniversalTime(), true, true);
 				// PrintDateNew output has format "Y1, D01, 0:24:45"
 				// -> change to "Y1_D01_0_24_43"
@@ -630,7 +629,13 @@ namespace KerbalImprovedSaveSystem
 			}
 			else
 				result = result.Replace("{Time}", DateTime.Now.ToString("yyyyMMdd_HHmmss"));
-			result = result.Replace("{ActiveVessel}", FlightGlobals.ActiveVessel.vesselName);
+
+			// If we are at the space center, we can't access the name of the active vessel, as there simple is none.
+			if (HighLogic.LoadedScene == GameScenes.SPACECENTER)
+				result = result.Replace("{ActiveVessel}", "SpaceCenter");
+			else
+				result = result.Replace("{ActiveVessel}", FlightGlobals.ActiveVessel.vesselName);
+
 
 			return result;
 		}
@@ -677,13 +682,17 @@ namespace KerbalImprovedSaveSystem
 		/// <param name="selectedSaveFileName">File name to save the game into.</param>
 		private void Save(string selectedSaveFileName)
 		{
-			// first we need to acquire the current game status
+			// First we need to acquire the current game status
 			Game currentGame = HighLogic.CurrentGame.Updated();
-			// then we have to reset the startScene to flight, because calling Updated() sets it to space center.
-			currentGame.startScene = GameScenes.FLIGHT;
 
-			// now we can save it...
+			// If we are not at the space center, we have to reset the startScene to flight,
+			// because calling Updated() sets it to space center.
+			if (HighLogic.LoadedScene == GameScenes.FLIGHT)
+			{
+				currentGame.startScene = GameScenes.FLIGHT;
+			}
 
+			// Now we can save it
 			SaveMode s = SaveMode.OVERWRITE; // available SaveModes are: OVERWRITE, APPEND, ABORT
 			string filename = GamePersistence.SaveGame(currentGame, selectedSaveFileName, HighLogic.SaveFolder, s);
 			Debug.Log(modLogTag + "Game saved in '" + filename + "'");

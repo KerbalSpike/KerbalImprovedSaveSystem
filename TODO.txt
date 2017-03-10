@@ -21,3 +21,4 @@ finished stuff:
 **) Make delete button adhere to the confirm delete option
 *) Make dialog appear at the center of the KISS window instead of center of screen.
 *) Make the timestamp adhere to the game time option.
+*) Make KISS also available in the space center.

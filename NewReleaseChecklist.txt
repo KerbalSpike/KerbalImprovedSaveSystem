@@ -1,0 +1,12 @@
+New Release Checklist:
+
+[] git: Merge changes into master
+[] VS: Build using Release config, not Debug config.
+[] copy release files into GameData
+[] update README.md, changelog.txt and TODO.txt
+[] git: commit "Release vX.Y.Z"
+[] git: tag -a vX.Y.Z -m "some message"
+[] git: push to github
+[] local: create release zip file
+[] github: draft release
+[]

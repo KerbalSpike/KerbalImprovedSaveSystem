@@ -1,6 +1,13 @@
 KISS version history
 ====================
 
+2.2.0, 2017-03-11
+	Compiled against KSP 1.2.2.
+	Added:		KISS is now also available while at the space center!
+	Added:		A few log statements during startup to help people with troubles getting KISS to work.
+	Changed:	Moved GUI Initialization stuff into Load() (from Update()).
+	
+	
 2.1.0, 2016-11-20
 	Changed:	A few minor tweaks under the hood (cleaned up some code segments and comments).
 	
