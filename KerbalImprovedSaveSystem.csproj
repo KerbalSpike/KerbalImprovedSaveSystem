@@ -44,6 +44,14 @@
     <WarningLevel>4</WarningLevel>
     <ConsolePause>false</ConsolePause>
   </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release KSP 1.2.2|AnyCPU'">
+   <OutputPath>Output\KSP_1.2.2\Plugins</OutputPath>
+    <Optimize>true</Optimize>
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <ConsolePause>false</ConsolePause>
+  </PropertyGroup>
   <ItemGroup Condition=" '$(Configuration)|$(Platform)' == 'Release KSP 1.1.0|AnyCPU' ">
     <Reference Include="Assembly-CSharp">
       <HintPath>..\Kerbal Space Program 1.1.0\KSP_Data\Managed\Assembly-CSharp.dll</HintPath>
@@ -84,8 +92,28 @@
       <Private>False</Private>
     </Reference>
   </ItemGroup>
+  <ItemGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug KSP 1.2.2|AnyCPU' ">
+    <Reference Include="Assembly-CSharp">
+      <HintPath>..\Kerbal Space Program 1.2.2\KSP_x64_Data\Managed\Assembly-CSharp.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="UnityEngine">
+      <HintPath>..\Kerbal Space Program 1.2.2\KSP_x64_Data\Managed\UnityEngine.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
+  </ItemGroup>
+  <ItemGroup Condition=" '$(Configuration)|$(Platform)' == 'Release KSP 1.2.2|AnyCPU' ">
+    <Reference Include="Assembly-CSharp">
+      <HintPath>..\Kerbal Space Program 1.2.2\KSP_x64_Data\Managed\Assembly-CSharp.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="UnityEngine">
+      <HintPath>..\Kerbal Space Program 1.2.2\KSP_x64_Data\Managed\UnityEngine.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
+  </ItemGroup>
   <ItemGroup>
-	<Reference Include="System" />
+    <Reference Include="System" />
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -106,11 +134,18 @@
     </MonoDevelop>
   </ProjectExtensions>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug KSP 1.2.1|AnyCPU' ">
-	<PreBuildEvent>del /F /S /Q "$(TargetDir)*.*"
+    <PreBuildEvent>del /F /S /Q "$(TargetDir)*.*"
 del /F /S /Q "$(ProjectDir)..\Kerbal Space Program 1.2.1\GameData\$(ProjectName)\*.*"</PreBuildEvent>
-	<PostBuildEvent>"$(ProjectDir)..\Tools\pdb2mdb\pdb2mdb.exe" "$(TargetFileName)"
+    <PostBuildEvent>"$(ProjectDir)..\Tools\pdb2mdb\pdb2mdb.exe" "$(TargetFileName)"
 xcopy "$(ProjectDir)icons\*.*" "$(TargetDir)..\icons" /D /E /C /R /I /K /Y
 xcopy "$(TargetDir)..\*.*" "$(ProjectDir)..\Kerbal Space Program 1.2.1\GameData\$(ProjectName)\" /D /E /C /R /I /K /Y</PostBuildEvent>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug KSP 1.2.2|AnyCPU' ">
+    <PreBuildEvent>del /F /S /Q "$(TargetDir)*.*"
+del /F /S /Q "$(ProjectDir)..\Kerbal Space Program 1.2.2\GameData\$(ProjectName)\*.*"</PreBuildEvent>
+    <PostBuildEvent>"$(ProjectDir)..\Tools\pdb2mdb\pdb2mdb.exe" "$(TargetFileName)"
+xcopy "$(ProjectDir)icons\*.*" "$(TargetDir)..\icons" /D /E /C /R /I /K /Y
+xcopy "$(TargetDir)..\*.*" "$(ProjectDir)..\Kerbal Space Program 1.2.2\GameData\$(ProjectName)\" /D /E /C /R /I /K /Y</PostBuildEvent>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release KSP 1.1.0|AnyCPU' ">
     <PostBuildEvent>xcopy "$(ProjectDir)icons\*.*" "$(TargetDir)..\icons" /D /E /C /R /I /K /Y
@@ -125,5 +160,11 @@ xcopy "$(TargetDir)..\*.*" "$(ProjectDir)..\Kerbal Space Program 1.1.3\GameData\
 del /F /S /Q "$(ProjectDir)..\Kerbal Space Program 1.2.1\GameData\$(ProjectName)\*.*"</PreBuildEvent>
     <PostBuildEvent>xcopy "$(ProjectDir)icons\*.*" "$(TargetDir)..\icons" /D /E /C /R /I /K /Y
 xcopy "$(TargetDir)..\*.*" "$(ProjectDir)..\Kerbal Space Program 1.2.1\GameData\$(ProjectName)\" /D /E /C /R /I /K /Y</PostBuildEvent>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release KSP 1.2.2|AnyCPU' ">
+    <PreBuildEvent>del /F /S /Q "$(TargetDir)*.*"
+del /F /S /Q "$(ProjectDir)..\Kerbal Space Program 1.2.2\GameData\$(ProjectName)\*.*"</PreBuildEvent>
+    <PostBuildEvent>xcopy "$(ProjectDir)icons\*.*" "$(TargetDir)..\icons" /D /E /C /R /I /K /Y
+xcopy "$(TargetDir)..\*.*" "$(ProjectDir)..\Kerbal Space Program 1.2.2\GameData\$(ProjectName)\" /D /E /C /R /I /K /Y</PostBuildEvent>
   </PropertyGroup>
 </Project>
