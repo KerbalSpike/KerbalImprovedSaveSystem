@@ -26,7 +26,7 @@ In other words: **KISS** allows you to manage your quicksaves without the need t
 * the "Print" key is for some reason not detected by my code (although it is listed as a viable KeyCode in Unity).
 
 ### Current version: 2.2.0 ###
-for Kerbal Space Program 1.2.2 (also tested with 1.2.1)
+for Kerbal Space Program 1.3.0 (also compatible with KSP 1.2.1 - 1.2.2)
 
 
 See [changelog.txt] (https://github.com/KerbalSpike/KerbalImprovedSaveSystem/blob/develop/changelog.txt) for list of changes.  
@@ -34,7 +34,8 @@ Visit the [Forum Thread] (http://forum.kerbalspaceprogram.com/index.php?/topic/1
 Download KISS on [SpaceDock] (http://spacedock.info/mod/583/Kerbal%20Improved%20Save%20System).
 
 #### Planned updates ("soon" :tm: ): ####
-* currently none
+* replace the old hardcoded UI with the new Unity GUI.
+* multi language support.
 
 #### Possible future extensions: ####
 * make KISS replace the stock quicksave entirely.
