@@ -501,8 +501,9 @@ namespace KerbalImprovedSaveSystem
 		/// </summary>
 		private void InitStyles()
 		{
-			_settingsTexture = new Texture2D(20, 20, TextureFormat.ARGB32, false); // is this line of code really necessary?
-			_settingsTexture = GameDatabase.Instance.GetTexture("KerbalImprovedSaveSystem/icons/settings", false);
+
+			_settingsTexture = new Texture2D(20, 20, TextureFormat.ARGB32, false);
+			var success = _settingsTexture.LoadImage(System.IO.File.ReadAllBytes("GameData/KerbalImprovedSaveSystem/icons/settings.png"));//GameDatabase.Instance.GetTexture("KerbalImprovedSaveSystem /icons/settings16x16", false);
 
 			Color myYellow = HighLogic.Skin.textField.normal.textColor;
 			Color myRed = new Color(0.78f, 0f, 0f);
