@@ -501,7 +501,6 @@ namespace KerbalImprovedSaveSystem
 		/// </summary>
 		private void InitStyles()
 		{
-
 			_settingsTexture = new Texture2D(20, 20, TextureFormat.ARGB32, false);
 			var success = _settingsTexture.LoadImage(System.IO.File.ReadAllBytes("GameData/KerbalImprovedSaveSystem/icons/settings.png"));//GameDatabase.Instance.GetTexture("KerbalImprovedSaveSystem /icons/settings16x16", false);
 
@@ -669,11 +668,15 @@ namespace KerbalImprovedSaveSystem
 		/// <param name="selectedSaveFileName">Filename to be deleted.</param>
 		private void Delete(string selectedSaveFileName)
 		{
-			string filename = saveGameDir + selectedFileName + ".sfs";
-			System.IO.File.Delete(filename);
+			string[] saveFiles = Directory.GetFiles(saveGameDir, selectedSaveFileName + ".*");
+			foreach (var filename in saveFiles)
+			{
+				System.IO.File.Delete(filename);
+			}
+
 			existingSaveGames.Remove(selectedFileName);
 			selectedFileName = String.Empty;
-			Debug.Log(modLogTag + "Savegame '" + filename + "' deleted.");
+			Debug.Log(modLogTag + "Savegame '" + selectedSaveFileName + "' deleted.");
 		}
 
 
