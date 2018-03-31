@@ -1,7 +1,7 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project DefaultTargets="Build" ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <PropertyGroup>
-    <Configuration Condition=" '$(Configuration)' == '' ">Debug KSP 1.2.2</Configuration>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug KSP 1.4.1</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
     <ProjectGuid>{DF2B9265-3296-4640-81FB-7FA24B782292}</ProjectGuid>
     <OutputType>Library</OutputType>
@@ -9,7 +9,7 @@
     <AssemblyName>KerbalImprovedSaveSystem</AssemblyName>
     <TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
     <Description>A small plugin for Kerbal Space Program that lets you choose from all existing savesgames when quicksaving so you don't have to remember a name and type it in if you want to overwrite a specific file.</Description>
-    <ReleaseVersion>2.0.0</ReleaseVersion>
+    <ReleaseVersion>2.3.0</ReleaseVersion>
     <UseMSBuildEngine>false</UseMSBuildEngine>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug KSP 1.2.2|AnyCPU' ">

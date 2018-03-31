@@ -25,8 +25,8 @@ In other words: **KISS** allows you to manage your quicksaves without the need t
 * all keys that to not produce characters like Backspace, Arrow Keys, etc. are labeled with their English names, regardless of keyboard language used.
 * the "Print" key is for some reason not detected by my code (although it is listed as a viable KeyCode in Unity).
 
-### Current version: 2.2.0 ###
-for Kerbal Space Program 1.3.0 - 1.3.1 (also compatible with KSP 1.2.1 - 1.2.2)
+### Current version: 2.3.0 ###
+for Kerbal Space Program 1.4.0 - 1.4.1
 
 
 See [changelog.txt] (https://github.com/KerbalSpike/KerbalImprovedSaveSystem/blob/develop/changelog.txt) for list of changes.  
