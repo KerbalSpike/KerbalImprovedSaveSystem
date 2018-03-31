@@ -16,7 +16,7 @@ namespace KerbalImprovedSaveSystem
 	/// <summary>
 	/// Start Kerbal Improved Save System when in a flight scene.
 	/// </summary>
-	[KSPAddon(KSPAddon.Startup.FlightAndKSC, false)]
+	[KSPAddon(KSPAddon.Startup.FlightAndKSC, true)]
 	public class KerbalImprovedSaveSystem : MonoBehaviour
 	{
 		// used to identify log entries of this plugin
@@ -80,6 +80,8 @@ namespace KerbalImprovedSaveSystem
 		{
 			Debug.Log(modLogTag + "Starting ...");
 
+			DontDestroyOnLoad(this); // Keep KISS alive once it is loaded.
+
 			_kissDialog = gameObject.AddComponent<KISSDialog>();
 
 			InitSettings();
@@ -103,6 +105,12 @@ namespace KerbalImprovedSaveSystem
 		/// </summary>
 		void Update()
 		{
+			if (HighLogic.LoadedScene != GameScenes.SPACECENTER && HighLogic.LoadedScene != GameScenes.FLIGHT)
+			{
+				// Don't do anygthing if not in flight or at the space center
+				return;
+			}
+
 			if (!isVisible)
 			{
 				// show window on keypress (default key = F8)
@@ -184,7 +192,7 @@ namespace KerbalImprovedSaveSystem
 		private void DetectInput()
 		{
 			// check for every possible key if it was pressed.
-			foreach (KeyCode vkey in System.Enum.GetValues(typeof(KeyCode)))
+			foreach (KeyCode vkey in Enum.GetValues(typeof(KeyCode)))
 			{
 				// do not allow the use of modifier keys, because that makes everything way more difficult
 				if (Input.GetKeyDown(vkey) && !Event.current.shift && !Event.current.capsLock &&
@@ -200,7 +208,7 @@ namespace KerbalImprovedSaveSystem
 						(vkey != KeyCode.LeftShift) && (vkey != KeyCode.RightShift) && (vkey != KeyCode.CapsLock))
 					{
 						kissKeyCode = vkey;
-						Boolean isFuncKey = Event.current.functionKey;
+						bool isFuncKey = Event.current.functionKey;
 						Event.current.capsLock = false;
 						char kissKeyChar = ' ';
 						kissKeyChar = Event.current.character;
@@ -212,7 +220,7 @@ namespace KerbalImprovedSaveSystem
 							continue;
 						}
 						// set the label for the new key either as the character or its name (for function keys).
-						if ((kissKeyChar == '\0') || isNumKey(vkey) || Char.IsDigit(kissKeyChar) || Char.IsWhiteSpace(kissKeyChar))
+						if ((kissKeyChar == '\0') || isNumKey(vkey) || char.IsDigit(kissKeyChar) || char.IsWhiteSpace(kissKeyChar))
 							kissKeyCaption = Enum.GetName(typeof(KeyCode), kissKeyCode);
 						else
 							kissKeyCaption = (kissKeyChar + "").ToUpper();
