@@ -71,7 +71,7 @@ namespace KerbalImprovedSaveSystem
 		private bool detectingNewKey = false;
 		// holds the currently used keybinding for KISS
 		private KeyCode kissKeyCode;
-		private String kissKeyCaption;
+		private string kissKeyCaption;
 
 		/// <summary>
 		/// Handles initialization of the plugin
