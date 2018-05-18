@@ -26,7 +26,7 @@ In other words: **KISS** allows you to manage your quicksaves without the need t
 * the "Print" key is for some reason not detected by my code (although it is listed as a viable KeyCode in Unity).
 
 ### Current version: 2.3.0 ###
-for Kerbal Space Program 1.4.0 - 1.4.2
+for Kerbal Space Program 1.4.0 - 1.4.3
 
 
 See [changelog.txt] (https://github.com/KerbalSpike/KerbalImprovedSaveSystem/blob/develop/changelog.txt) for list of changes.  
