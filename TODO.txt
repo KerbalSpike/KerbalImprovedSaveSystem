@@ -1,6 +1,23 @@
-
 Things to implement, roughly in order of (decreasing) importance:
 =================================================================
+*) More sorting options. Perhaps sorting on game time, real time etc?
+
+
+WhishList from forum.kerbalspaceprogram.com users:
+==================================================
+* More sorting options. Perhaps sorting on game time, real time etc?
+** It would be required to somehow get the necessary information. I see 2 possible solutions:
+
+    1. looking directly into the save file to get things like the game time and the current vessel, even if those are not in the file name.
+    2. or to put for example both game time AND real time into the file name and make it possible to select which one should be displayed.
+
+	I have avoided 1. so far to keep things as simple as possible (the acronym for the plugin is no coincidence :D ), and 2. might result in really long file names...
+	
+* This plugin allows some characters in the filename of the save that KSP doesn't like. For instance my ship is called MunLander1.1 (yes, with a dot), and the KISS popup lets me save the game like '20180824_202111_MunLander1.1'.
+
+* Programmable timed savings (with sequential naming)
+
+
 
 -----------
 Known bugs:
