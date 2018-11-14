@@ -1,6 +1,6 @@
-
 Things to implement, roughly in order of (decreasing) importance:
 =================================================================
+*) More sorting options. Perhaps sorting on game time, real time etc?
 
 -----------
 Known bugs:

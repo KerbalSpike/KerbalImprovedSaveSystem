@@ -20,3 +20,6 @@
 # Visual Studio/Unity debug information
 *.mdb
 *.pdb
+
+# Custom Files
+Notes.txt

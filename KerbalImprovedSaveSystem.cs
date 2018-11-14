@@ -120,7 +120,7 @@ namespace KerbalImprovedSaveSystem
 					FlightDriver.SetPause(true);
 					saveGameDir = KSPUtil.ApplicationRootPath + "saves/" + HighLogic.SaveFolder + "/";
 					existingSaveGames = getExistingSaves(saveGameDir);
-					selectedFileName = getDfltFileName();
+					selectedFileName = getDefaultFileName();
 
 					// launch GUI when not in quicksave mode or when modifier key is pressed (default: ALT)
 					if (!quickSaveMode || GameSettings.MODIFIER_KEY.GetKey())
@@ -397,7 +397,7 @@ namespace KerbalImprovedSaveSystem
 			GUILayout.BeginHorizontal();
 			if (GUILayout.Button(new GUIContent("Default", "Use the suggested default filename for the savegame."), _altBtnStyle))
 			{
-				selectedFileName = getDfltFileName();
+				selectedFileName = getDefaultFileName();
 			}
 			GUILayout.Space(70);
 			if (existingSaveGames.Contains(selectedFileName))
@@ -623,27 +623,27 @@ namespace KerbalImprovedSaveSystem
 		/// Returns the default filename for the savegame according to the current settings
 		/// </summary>
 		/// <returns></returns>
-		private string getDfltFileName()
+		private string getDefaultFileName()
 		{
 			string result = dfltSaveNames[selectedDfltSaveName];
 			if (useGameTime)
 			{
-				// Use planetarium universal time
-				string timeStamp = KSPUtil.PrintDateCompact(Planetarium.GetUniversalTime(), true, true);
-				// PrintDateNew output has format "Y1, D01, 0:24:45"
-				// -> change to "Y1_D01_0_24_43"
-				timeStamp = timeStamp.Replace(", ", "_").Replace(":", "_");
-				result = result.Replace("{Time}", timeStamp);
+				var currentGameTime = Planetarium.GetUniversalTime();
+				var lengthOfDay = Planetarium.fetch.Home.solarDayLength;
+				var lengthOfYear = Planetarium.fetch.Home.GetOrbit().period;
+
+				var currentTimeOfHomePlanet = new PlanetTime(currentGameTime, lengthOfYear, lengthOfDay);
+
+				result = result.Replace("{Time}", currentTimeOfHomePlanet.ToCompactSortableTimeStamp());
 			}
 			else
 				result = result.Replace("{Time}", DateTime.Now.ToString("yyyyMMdd_HHmmss"));
 
-			// If we are at the space center, we can't access the name of the active vessel, as there simple is none.
+			// If we are at the space center, we can't access the name of the active vessel, as there simply is none.
 			if (HighLogic.LoadedScene == GameScenes.SPACECENTER)
 				result = result.Replace("{ActiveVessel}", "SpaceCenter");
 			else
 				result = result.Replace("{ActiveVessel}", FlightGlobals.ActiveVessel.vesselName);
-
 
 			return result;
 		}
