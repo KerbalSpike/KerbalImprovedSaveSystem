@@ -1,6 +1,11 @@
 KISS version history
 ====================
 
+2.4.0, 2018-11-14
+	Compiled against KSP 1.5.1.
+	Fixed: added custom logic to make GameTime timestamps sortable
+	
+	
 2.3.0, 2018-03-31
 	Compiled against KSP 1.4.1.
 	Fixed:		Settings icon was not loaded in KSP 1.4.x.
