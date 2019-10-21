@@ -1,6 +1,11 @@
 KISS version history
 ====================
 
+2.4.1, 2019-10-21
+	Compiled against KSP 1.8.0.
+	Changed: updated Unity .dll references for Unity 2019.2
+	
+
 2.4.0, 2018-11-14
 	Compiled against KSP 1.5.1.
 	Fixed: added custom logic to make GameTime timestamps sortable
