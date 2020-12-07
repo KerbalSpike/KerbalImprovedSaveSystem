@@ -1,24 +1,30 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 15
-VisualStudioVersion = 15.0.28307.168
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.30128.74
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "KerbalImprovedSaveSystem", "KerbalImprovedSaveSystem.csproj", "{DF2B9265-3296-4640-81FB-7FA24B782292}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug KSP 1.10|Any CPU = Debug KSP 1.10|Any CPU
 		Debug KSP 1.8|Any CPU = Debug KSP 1.8|Any CPU
-		Release KSP 1.8|Any CPU = Release KSP 1.8|Any CPU
 		Debug KSP 1.9|Any CPU = Debug KSP 1.9|Any CPU
+		Release KSP 1.10|Any CPU = Release KSP 1.10|Any CPU
+		Release KSP 1.8|Any CPU = Release KSP 1.8|Any CPU
 		Release KSP 1.9|Any CPU = Release KSP 1.9|Any CPU
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{DF2B9265-3296-4640-81FB-7FA24B782292}.Debug KSP 1.10|Any CPU.ActiveCfg = Debug KSP 1.10|Any CPU
+		{DF2B9265-3296-4640-81FB-7FA24B782292}.Debug KSP 1.10|Any CPU.Build.0 = Debug KSP 1.10|Any CPU
 		{DF2B9265-3296-4640-81FB-7FA24B782292}.Debug KSP 1.8|Any CPU.ActiveCfg = Debug KSP 1.8|Any CPU
 		{DF2B9265-3296-4640-81FB-7FA24B782292}.Debug KSP 1.8|Any CPU.Build.0 = Debug KSP 1.8|Any CPU
-		{DF2B9265-3296-4640-81FB-7FA24B782292}.Release KSP 1.8|Any CPU.ActiveCfg = Release KSP 1.8|Any CPU
-		{DF2B9265-3296-4640-81FB-7FA24B782292}.Release KSP 1.8|Any CPU.Build.0 = Release KSP 1.8|Any CPU
 		{DF2B9265-3296-4640-81FB-7FA24B782292}.Debug KSP 1.9|Any CPU.ActiveCfg = Debug KSP 1.9|Any CPU
 		{DF2B9265-3296-4640-81FB-7FA24B782292}.Debug KSP 1.9|Any CPU.Build.0 = Debug KSP 1.9|Any CPU
+		{DF2B9265-3296-4640-81FB-7FA24B782292}.Release KSP 1.10|Any CPU.ActiveCfg = Release KSP 1.9|Any CPU
+		{DF2B9265-3296-4640-81FB-7FA24B782292}.Release KSP 1.10|Any CPU.Build.0 = Release KSP 1.9|Any CPU
+		{DF2B9265-3296-4640-81FB-7FA24B782292}.Release KSP 1.8|Any CPU.ActiveCfg = Release KSP 1.8|Any CPU
+		{DF2B9265-3296-4640-81FB-7FA24B782292}.Release KSP 1.8|Any CPU.Build.0 = Release KSP 1.8|Any CPU
 		{DF2B9265-3296-4640-81FB-7FA24B782292}.Release KSP 1.9|Any CPU.ActiveCfg = Release KSP 1.9|Any CPU
 		{DF2B9265-3296-4640-81FB-7FA24B782292}.Release KSP 1.9|Any CPU.Build.0 = Release KSP 1.9|Any CPU
 	EndGlobalSection

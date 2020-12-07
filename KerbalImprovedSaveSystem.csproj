@@ -1,7 +1,7 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project DefaultTargets="Build" ToolsVersion="12.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <PropertyGroup>
-    <Configuration Condition=" '$(Configuration)' == '' ">Debug KSP 1.9</Configuration>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug KSP 1.10</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
     <ProjectGuid>{DF2B9265-3296-4640-81FB-7FA24B782292}</ProjectGuid>
     <OutputType>Library</OutputType>
@@ -13,111 +13,77 @@
     <UseMSBuildEngine>false</UseMSBuildEngine>
     <TargetFrameworkProfile />
   </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug KSP 1.8|AnyCPU'">
-    <DebugSymbols>true</DebugSymbols>
-    <DebugType>full</DebugType>
-    <Optimize>false</Optimize>
+  <!-- <PropertyGroup Condition=" $(Configuration.Contains('KSP 1.8')) "> -->
+  <PropertyGroup Condition=" '$(Configuration)' == 'Debug KSP 1.8' Or '$(Configuration)' == 'Release KSP 1.8' ">
+    <KspVersion>1.8.0</KspVersion>
     <OutputPath>Output\KSP_1.8\Plugins</OutputPath>
-    <DefineConstants>DEBUG;</DefineConstants>
-    <ErrorReport>prompt</ErrorReport>
-    <WarningLevel>4</WarningLevel>
-    <ConsolePause>false</ConsolePause>
   </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release KSP 1.8|AnyCPU'">
-    <OutputPath>Output\KSP_1.8\Plugins</OutputPath>
-    <Optimize>true</Optimize>
+  <!-- <PropertyGroup Condition=" $(Configuration.Contains('KSP 1.9')) "> -->
+  <PropertyGroup Condition=" '$(Configuration)' == 'Debug KSP 1.9' Or '$(Configuration)' == 'Release KSP 1.9' ">
+    <KspVersion>1.9.1</KspVersion>
+    <OutputPath>Output\KSP_1.9\Plugins</OutputPath>
+  </PropertyGroup>
+  <!-- <PropertyGroup Condition=" $(Configuration.Contains('KSP 1.10')) "> -->
+  <PropertyGroup Condition=" '$(Configuration)' == 'Debug KSP 1.10' Or '$(Configuration)' == 'Release KSP 1.10' ">
+	<KspVersion>1.10.1</KspVersion>
+	<OutputPath>Output\KSP_1.10\Plugins</OutputPath>
+  </PropertyGroup>
+  <PropertyGroup Condition=" $(Configuration.Contains('Release')) ">
+	<Optimize>true</Optimize>
     <PlatformTarget>AnyCPU</PlatformTarget>
-    <ErrorReport>prompt</ErrorReport>
-    <WarningLevel>4</WarningLevel>
-    <ConsolePause>false</ConsolePause>
   </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug KSP 1.9|AnyCPU'">
-    <DebugSymbols>true</DebugSymbols>
-    <DebugType>full</DebugType>
+  <PropertyGroup Condition=" $(Configuration.Contains('Debug')) ">
+	<DebugSymbols>true</DebugSymbols>
+    <DebugType>portable</DebugType>
     <Optimize>false</Optimize>
-    <OutputPath>Output\KSP_1.9\Plugins</OutputPath>
-    <DefineConstants>DEBUG;</DefineConstants>
+	<DefineConstants>DEBUG;</DefineConstants>
+  </PropertyGroup>
+  <PropertyGroup>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
     <ConsolePause>false</ConsolePause>
   </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release KSP 1.9|AnyCPU'">
-    <OutputPath>Output\KSP_1.9\Plugins</OutputPath>
-    <Optimize>true</Optimize>
-    <PlatformTarget>AnyCPU</PlatformTarget>
-    <ErrorReport>prompt</ErrorReport>
-    <WarningLevel>4</WarningLevel>
-    <ConsolePause>false</ConsolePause>
-  </PropertyGroup>
-  <ItemGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug KSP 1.8|AnyCPU' ">
-    <Reference Include="Assembly-CSharp">
-      <HintPath>..\Kerbal Space Program 1.8.0\KSP_x64_Data\Managed\Assembly-CSharp.dll</HintPath>
-      <Private>False</Private>
-    </Reference>
-    <Reference Include="UnityEngine">
-      <HintPath>..\Kerbal Space Program 1.8.0\KSP_x64_Data\Managed\UnityEngine.dll</HintPath>
-      <Private>False</Private>
-    </Reference>
-  </ItemGroup>
-  <ItemGroup Condition=" '$(Configuration)|$(Platform)' == 'Release KSP 1.8|AnyCPU' ">
-    <Reference Include="Assembly-CSharp">
-      <HintPath>..\Kerbal Space Program 1.8.0\KSP_x64_Data\Managed\Assembly-CSharp.dll</HintPath>
-      <Private>False</Private>
-    </Reference>
-    <Reference Include="UnityEngine">
-      <HintPath>..\Kerbal Space Program 1.8.0\KSP_x64_Data\Managed\UnityEngine.dll</HintPath>
-      <Private>False</Private>
-    </Reference>
-  </ItemGroup>
-  <ItemGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug KSP 1.9|AnyCPU' ">
-    <Reference Include="Assembly-CSharp">
-      <HintPath>..\Kerbal Space Program 1.9.1\KSP_x64_Data\Managed\Assembly-CSharp.dll</HintPath>
-      <Private>False</Private>
-    </Reference>
-    <Reference Include="UnityEngine">
-      <HintPath>..\Kerbal Space Program 1.9.1\KSP_x64_Data\Managed\UnityEngine.dll</HintPath>
-      <Private>False</Private>
-    </Reference>
-  </ItemGroup>
-  <ItemGroup Condition=" '$(Configuration)|$(Platform)' == 'Release KSP 1.9|AnyCPU' ">
-    <Reference Include="Assembly-CSharp">
-      <HintPath>..\Kerbal Space Program 1.9.1\KSP_x64_Data\Managed\Assembly-CSharp.dll</HintPath>
-      <Private>False</Private>
-    </Reference>
-    <Reference Include="UnityEngine">
-      <HintPath>..\Kerbal Space Program 1.9.1\KSP_x64_Data\Managed\UnityEngine.dll</HintPath>
-      <Private>False</Private>
-    </Reference>
-  </ItemGroup>
+  <Target Name="Build">
+  	<Message Importance="High" Text="KspVersion = $(KspVersion)" />
+  	<Message Importance="High" Text="OutputPath = $(OutputPath)" />
+  </Target>
   <ItemGroup>
     <Reference Include="System" />
-    <Reference Include="UnityEngine.CoreModule">
-      <HintPath>..\Kerbal Space Program 1.9.1\KSP_x64_Data\Managed\UnityEngine.CoreModule.dll</HintPath>
-      <Private>False</Private>
-    </Reference>
-    <Reference Include="UnityEngine.ImageConversionModule">
-      <HintPath>..\Kerbal Space Program 1.9.1\KSP_x64_Data\Managed\UnityEngine.ImageConversionModule.dll</HintPath>
-      <Private>False</Private>
-    </Reference>
-    <Reference Include="UnityEngine.IMGUIModule">
-      <HintPath>..\Kerbal Space Program 1.9.1\KSP_x64_Data\Managed\UnityEngine.IMGUIModule.dll</HintPath>
-      <Private>False</Private>
-    </Reference>
-    <Reference Include="UnityEngine.InputLegacyModule">
-      <HintPath>..\Kerbal Space Program 1.9.1\KSP_x64_Data\Managed\UnityEngine.InputLegacyModule.dll</HintPath>
-      <Private>False</Private>
-    </Reference>
-    <Reference Include="UnityEngine.TextRenderingModule">
-      <HintPath>..\Kerbal Space Program 1.9.1\KSP_x64_Data\Managed\UnityEngine.TextRenderingModule.dll</HintPath>
-      <Private>False</Private>
-    </Reference>
-  </ItemGroup>
-  <ItemGroup>
     <Compile Include="PlanetTime.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Extensions\RectExtensions.cs" />
     <Compile Include="KerbalImprovedSaveSystem.cs" />
     <Compile Include="KISSDialog.cs" />
+  </ItemGroup>
+  <ItemGroup Condition=" '$(KspVersion)' &gt;= '1.8.0' ">
+    <Reference Include="Assembly-CSharp">
+      <HintPath>..\Kerbal Space Program $(KspVersion)\KSP_x64_Data\Managed\Assembly-CSharp.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="UnityEngine">
+      <HintPath>..\Kerbal Space Program $(KspVersion)\KSP_x64_Data\Managed\UnityEngine.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="UnityEngine.CoreModule">
+      <HintPath>..\Kerbal Space Program $(KspVersion)\KSP_x64_Data\Managed\UnityEngine.CoreModule.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="UnityEngine.ImageConversionModule">
+      <HintPath>..\Kerbal Space Program $(KspVersion)\KSP_x64_Data\Managed\UnityEngine.ImageConversionModule.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="UnityEngine.IMGUIModule">
+      <HintPath>..\Kerbal Space Program $(KspVersion)\KSP_x64_Data\Managed\UnityEngine.IMGUIModule.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="UnityEngine.InputLegacyModule">
+      <HintPath>..\Kerbal Space Program $(KspVersion)\KSP_x64_Data\Managed\UnityEngine.InputLegacyModule.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="UnityEngine.TextRenderingModule">
+      <HintPath>..\Kerbal Space Program $(KspVersion)\KSP_x64_Data\Managed\UnityEngine.TextRenderingModule.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>
@@ -133,34 +99,11 @@
       </Properties>
     </MonoDevelop>
   </ProjectExtensions>
-  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug KSP 1.8|AnyCPU' ">
+  <PropertyGroup>
     <PreBuildEvent>del /F /S /Q "$(TargetDir)*.*"
-del /F /S /Q "$(ProjectDir)..\Kerbal Space Program 1.8.0\GameData\$(ProjectName)\*.*"</PreBuildEvent>
-    <PostBuildEvent>"$(ProjectDir)..\Tools\ksp1.8_pdb2mdb\pdb2mdb.exe" "$(TargetFileName)"
-xcopy "$(ProjectDir)icons\*.*" "$(TargetDir)..\icons" /D /E /C /R /I /K /Y
-xcopy "$(TargetDir)..\*.*" "$(ProjectDir)..\Kerbal Space Program 1.8.0\GameData\$(ProjectName)\" /D /E /C /R /I /K /Y</PostBuildEvent>
-    <Prefer32Bit>false</Prefer32Bit>
-  </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release KSP 1.8|AnyCPU' ">
-    <PreBuildEvent>del /F /S /Q "$(TargetDir)*.*"
-del /F /S /Q "$(ProjectDir)..\Kerbal Space Program 1.8.0\GameData\$(ProjectName)\*.*"</PreBuildEvent>
+del /F /S /Q "$(ProjectDir)..\Kerbal Space Program $(KspVersion)\GameData\$(ProjectName)\*.*"</PreBuildEvent>
     <PostBuildEvent>xcopy "$(ProjectDir)icons\*.*" "$(TargetDir)..\icons" /D /E /C /R /I /K /Y
-xcopy "$(TargetDir)..\*.*" "$(ProjectDir)..\Kerbal Space Program 1.8.0\GameData\$(ProjectName)\" /D /E /C /R /I /K /Y</PostBuildEvent>
-    <Prefer32Bit>false</Prefer32Bit>
-  </PropertyGroup>
-  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug KSP 1.9|AnyCPU' ">
-    <PreBuildEvent>del /F /S /Q "$(TargetDir)*.*"
-del /F /S /Q "$(ProjectDir)..\Kerbal Space Program 1.9.1\GameData\$(ProjectName)\*.*"</PreBuildEvent>
-    <PostBuildEvent>"$(ProjectDir)..\Tools\ksp1.8_pdb2mdb\pdb2mdb.exe" "$(TargetFileName)"
-xcopy "$(ProjectDir)icons\*.*" "$(TargetDir)..\icons" /D /E /C /R /I /K /Y
-xcopy "$(TargetDir)..\*.*" "$(ProjectDir)..\Kerbal Space Program 1.9.1\GameData\$(ProjectName)\" /D /E /C /R /I /K /Y</PostBuildEvent>
-    <Prefer32Bit>false</Prefer32Bit>
-  </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release KSP 1.9|AnyCPU' ">
-    <PreBuildEvent>del /F /S /Q "$(TargetDir)*.*"
-del /F /S /Q "$(ProjectDir)..\Kerbal Space Program 1.9.1\GameData\$(ProjectName)\*.*"</PreBuildEvent>
-    <PostBuildEvent>xcopy "$(ProjectDir)icons\*.*" "$(TargetDir)..\icons" /D /E /C /R /I /K /Y
-xcopy "$(TargetDir)..\*.*" "$(ProjectDir)..\Kerbal Space Program 1.9.1\GameData\$(ProjectName)\" /D /E /C /R /I /K /Y</PostBuildEvent>
+xcopy "$(TargetDir)..\*.*" "$(ProjectDir)..\Kerbal Space Program $(KspVersion)\GameData\$(ProjectName)\" /D /E /C /R /I /K /Y</PostBuildEvent>
     <Prefer32Bit>false</Prefer32Bit>
   </PropertyGroup>
 </Project>
